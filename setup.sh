@@ -87,16 +87,16 @@ fi
 # ────────────────────────────────────────────────
 # 4. Install Python packages
 # ────────────────────────────────────────────────
-step 4 "Installing three Python packages (~100 MB; first run may take a minute)..."
-if $PIP_CMD install --quiet --upgrade fastembed pymupdf numpy 2>/dev/null; then
+step 4 "Installing four Python packages (~100 MB; first run may take a minute)..."
+if $PIP_CMD install --quiet --upgrade fastembed pymupdf numpy rank-bm25 2>/dev/null; then
   ok "Packages installed"
 else
   warn "System-wide install failed; retrying with --user scope"
-  if $PIP_CMD install --quiet --upgrade --user fastembed pymupdf numpy 2>/dev/null; then
+  if $PIP_CMD install --quiet --upgrade --user fastembed pymupdf numpy rank-bm25 2>/dev/null; then
     ok "Packages installed (user scope)"
   else
     fail "Package install failed"
-    hint "Try: $PIP_CMD install fastembed pymupdf numpy"
+    hint "Try: $PIP_CMD install fastembed pymupdf numpy rank-bm25"
     bigfail
   fi
 fi
@@ -116,7 +116,16 @@ if [ "$INDEX_BYTES" -lt 1000000 ]; then
   hint "Delete the folder and re-clone"
   bigfail
 fi
-ok "Index files present (index: $((INDEX_BYTES / 1024 / 1024)) MB)"
+# Build BM25 keyword index if missing (lightweight, runs once)
+if [ ! -f "brain/bm25.pkl" ]; then
+  warn "BM25 keyword index missing; building it now (one-time, ~5 seconds)"
+  if python3 brain/build_bm25.py > /dev/null 2>&1; then
+    ok "BM25 index built ($(wc -c < brain/bm25.pkl | awk '{print int($1/1024/1024)}') MB)"
+  else
+    warn "BM25 build failed; system will run in dense-only mode (still works)"
+  fi
+fi
+ok "Index files present (dense: $((INDEX_BYTES / 1024 / 1024)) MB)"
 
 # ────────────────────────────────────────────────
 # 6. Smoke retrieval (real query against the brain)

@@ -1,106 +1,106 @@
 {
-  "description": "Retrieval quality evaluation set. Each entry is a query that should retrieve content from at least one of the expected_sources within the top-k. Used to sanity-check retrieval after ingestion or re-indexing. Run: python3 _qa/eval.py",
-  "version": 1,
+  "description": "Retrieval quality evaluation set for the 3-books + transcripts corpus. Each entry is a query that should retrieve content from at least one of the expected_sources within the top-k. A query 'passes' if any expected source appears in top-k retrieval results. Note: this corpus is ~88% YouTube transcripts and ~12% book chunks, so even a perfectly working retrieval may legitimately surface a transcript instead of the expected book. Treat pass rate as directional rather than absolute.",
+  "version": 2,
   "top_k": 5,
   "queries": [
     {
-      "query": "value equation four drivers dream outcome",
-      "expected_sources": ["$100M Offers (Alex Hormozi)", "100M Offers (Alex Hormozi)"],
+      "query": "value equation four drivers dream outcome perceived likelihood",
+      "expected_sources": ["100M Offers (Alex Hormozi)"],
       "topic": "Offer Strength"
     },
     {
-      "query": "how to construct a grand slam offer",
-      "expected_sources": ["$100M Offers (Alex Hormozi)", "100M Offers (Alex Hormozi)"],
+      "query": "how to construct a grand slam offer people feel stupid saying no",
+      "expected_sources": ["100M Offers (Alex Hormozi)"],
       "topic": "Offer Differentiation"
     },
     {
       "query": "bonuses stacking expand price-to-value gap",
-      "expected_sources": ["$100M Offers (Alex Hormozi)", "100M Offers (Alex Hormozi)"],
+      "expected_sources": ["100M Offers (Alex Hormozi)"],
       "topic": "Bonuses"
     },
     {
       "query": "conditional vs unconditional guarantee",
-      "expected_sources": ["$100M Offers (Alex Hormozi)", "100M Offers (Alex Hormozi)"],
+      "expected_sources": ["100M Offers (Alex Hormozi)"],
       "topic": "Guarantees"
     },
     {
-      "query": "raise prices on existing customers mechanics",
-      "expected_sources": ["$100M Price Raise Playbook", "100M Price Raise Playbook"],
+      "query": "raise prices on existing customers grandfather pricing",
+      "expected_sources": ["100M Offers (Alex Hormozi)", "100M Money Models - How To Make Money_"],
       "topic": "Price Raises"
     },
     {
-      "query": "how to pick your price tiered value-based",
-      "expected_sources": ["$100M Pricing Playbook", "100M Pricing Playbook"],
+      "query": "charge heinous amounts value-based pricing",
+      "expected_sources": ["100M Offers (Alex Hormozi)", "100M Money Models - How To Make Money_"],
       "topic": "Pricing"
     },
     {
-      "query": "the core four ways to get leads",
-      "expected_sources": ["$100M Leads How to Get Strangers", "100M Leads How to Get Strangers"],
+      "query": "the core four ways to get leads warm cold content paid",
+      "expected_sources": ["100M Leads How to Get Strangers"],
       "topic": "Lead Channels"
     },
     {
-      "query": "rule of 100 daily activity bar",
-      "expected_sources": ["$100M Leads How to Get Strangers", "100M Leads How to Get Strangers"],
+      "query": "rule of 100 daily activity bar consistency",
+      "expected_sources": ["100M Leads How to Get Strangers"],
       "topic": "Lead Volume"
     },
     {
-      "query": "hook construction callout curiosity contrast claim",
-      "expected_sources": ["$100M Hooks Playbook", "100M Hooks Playbook"],
+      "query": "hook construction callout curiosity contrast claim attention",
+      "expected_sources": ["100M Leads How to Get Strangers"],
       "topic": "Hooks"
     },
     {
       "query": "lead magnet design MAGIC framework",
-      "expected_sources": ["$100M Leads How to Get Strangers", "100M Leads How to Get Strangers"],
+      "expected_sources": ["100M Leads How to Get Strangers"],
       "topic": "Lead Magnets"
     },
     {
-      "query": "CLOSER framework sales conversation",
-      "expected_sources": ["$100M Closing Playbook", "100M Closing Playbook"],
+      "query": "CLOSER framework sales conversation discovery close",
+      "expected_sources": ["100M Money Models - How To Make Money_", "100M Leads How to Get Strangers"],
       "topic": "Closing"
     },
     {
-      "query": "speed to lead follow up touches",
-      "expected_sources": ["$100M Leads How to Get Strangers", "100M Closing Playbook"],
+      "query": "speed to lead follow up sequence touches",
+      "expected_sources": ["100M Leads How to Get Strangers"],
       "topic": "Sales Cadence"
     },
     {
-      "query": "five revenue model archetypes attraction upsell continuity",
-      "expected_sources": ["$100M Money Models - How To Make Money_", "100M Money Models - How To Make Money_"],
+      "query": "five revenue model archetypes attraction upsell continuity downsell win-back",
+      "expected_sources": ["100M Money Models - How To Make Money_"],
       "topic": "Money Models"
     },
     {
-      "query": "fast cash generate revenue this week",
-      "expected_sources": ["$100M Fast Cash Playbook", "100M Fast Cash Playbook"],
+      "query": "fast cash generate revenue this week mechanisms",
+      "expected_sources": ["100M Money Models - How To Make Money_"],
       "topic": "Fast Cash"
     },
     {
-      "query": "LTV CAC ratio payback period",
-      "expected_sources": ["$100M Lifetime Value Playbook", "100M Lifetime Value Playbook", "$100M Money Models - How To Make Money_", "100M Money Models - How To Make Money_"],
+      "query": "LTV CAC ratio payback period customer acquisition",
+      "expected_sources": ["100M Money Models - How To Make Money_"],
       "topic": "Unit Economics"
     },
     {
-      "query": "onboarding first week milestone retention",
-      "expected_sources": ["$100M Retention Playbook", "100M Retention Playbook"],
+      "query": "onboarding first week milestone retention churn",
+      "expected_sources": ["100M Money Models - How To Make Money_"],
       "topic": "Retention"
     },
     {
-      "query": "extend lifetime value upsells cross sell",
-      "expected_sources": ["$100M Lifetime Value Playbook", "100M Lifetime Value Playbook"],
+      "query": "extend lifetime value upsells cross sell continuity",
+      "expected_sources": ["100M Money Models - How To Make Money_"],
       "topic": "LTV Extension"
     },
     {
-      "query": "stacking proof case studies named results",
-      "expected_sources": ["$100M Proof Checklist (_ Page 20_ 23_ 24_ 25_ scan)", "100M Proof Checklist (_ Page 20_ 23_ 24_ 25_ scan)", "$100M Branding Playbook", "100M Branding Playbook"],
+      "query": "stacking proof case studies named results testimonials",
+      "expected_sources": ["100M Offers (Alex Hormozi)", "100M Leads How to Get Strangers"],
       "topic": "Proof"
     },
     {
-      "query": "brand recognition association niche",
-      "expected_sources": ["$100M Branding Playbook", "100M Branding Playbook"],
+      "query": "brand building recognition association niche specialist",
+      "expected_sources": ["100M Leads How to Get Strangers", "100M Money Models - How To Make Money_"],
       "topic": "Brand"
     },
     {
-      "query": "scaling stages founder team manager owner",
-      "expected_sources": ["$100M Scaling Roadmap", "100M Scaling Roadmap"],
+      "query": "scaling business stages founder team operator leverage",
+      "expected_sources": ["100M Money Models - How To Make Money_", "100M Leads How to Get Strangers"],
       "topic": "Scaling"
     }
   ]

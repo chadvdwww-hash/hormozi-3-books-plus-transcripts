@@ -32,7 +32,7 @@ EVAL_PATH = HERE / "eval-queries.json"
 
 sys.path.insert(0, str(BRAIN))
 try:
-    from query import load_index, search, EMBED_MODEL
+    from query import load_index, load_bm25, search, EMBED_MODEL
 except ImportError as exc:
     sys.exit(f"could not import brain/query.py: {exc}")
 
@@ -59,6 +59,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--no-mmr", action="store_true")
+    parser.add_argument("--no-bm25", action="store_true", help="dense-only baseline")
     args = parser.parse_args()
 
     if not EVAL_PATH.exists():
@@ -72,9 +73,11 @@ def main():
     print(f"Loading index ...", flush=True)
     embeddings, chunks = load_index()
     embeddings = np.nan_to_num(embeddings, nan=0.0, posinf=0.0, neginf=0.0)
+    bm25 = None if args.no_bm25 else load_bm25()
+    mode = "hybrid (dense + bm25)" if bm25 is not None else "dense-only"
     embedder = TextEmbedding(model_name=EMBED_MODEL)
 
-    print(f"Running {len(queries)} queries (top_k={top_k}, mmr_lambda={mmr_lambda}) ...", flush=True)
+    print(f"Running {len(queries)} queries (top_k={top_k}, mmr_lambda={mmr_lambda}, mode={mode}) ...", flush=True)
     query_texts = [q["query"] for q in queries]
     query_vecs = list(embedder.embed(query_texts))
 
@@ -83,7 +86,10 @@ def main():
     failures: list[dict] = []
 
     for q, vec in zip(queries, query_vecs):
-        results = search(embeddings, chunks, vec, top_k, mmr_lambda=mmr_lambda)
+        results = search(
+            embeddings, chunks, q["query"], vec,
+            top_k=top_k, mmr_lambda=mmr_lambda, bm25=bm25,
+        )
         rr = reciprocal_rank(results, q["expected_sources"])
         rr_sum += rr
         passed = rr > 0
