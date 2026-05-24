@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="$100M Business OS — a folder that becomes a Hormozi-trained business strategist on your machine. The operator manual." />
-<title>$100M Business OS · Lean · Operator Manual</title>
+<meta name="description" content="$100M Business OS — a folder that becomes a $100M-trained business strategist on your machine. The operator manual." />
+<title>$100M Business OS · Operator Manual</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -59,7 +59,7 @@
   }
   .mono { font-family: "JetBrains Mono", monospace; }
 
-  /* SYNTAX TOKENS — used throughout */
+  /* SYNTAX TOKENS: used throughout */
   .tk-c { color: var(--c-comment); }   /* comments */
   .tk-k { color: var(--c-keyword); font-weight: 500; }  /* keywords */
   .tk-s { color: var(--c-string); }   /* strings */
@@ -200,7 +200,7 @@
   }
   .btn-ghost:hover { background: var(--ink); color: var(--bg); }
 
-  /* AUTHOR CARD — simple */
+  /* AUTHOR CARD: simple */
   .author {
     display: flex; flex-direction: column; align-items: flex-start;
     gap: 14px;
@@ -532,7 +532,7 @@
   }
   .wf .ex::before { content: "$ "; color: var(--green); }
 
-  /* WATCHER — green-themed (Money Models) */
+  /* WATCHER: green-themed (Money Models) */
   .watcher {
     background:
       linear-gradient(135deg, var(--green-soft), transparent 60%),
@@ -655,7 +655,7 @@
      CODE-STYLE ANIMATIONS
      ============================================================ */
 
-  /* Pulse status dot — "system live" indicator (no blink) */
+  /* Pulse status dot: "system live" indicator (no blink) */
   .file-tag::before {
     animation: pulse-green 2.4s ease-out infinite;
   }
@@ -731,7 +731,7 @@
   }
 
   /* ============================================================
-     RESPONSIVE POLISH — breakpoint pass
+     RESPONSIVE POLISH: breakpoint pass
      ============================================================ */
 
   /* Very small phones (320 to 380px): tighten paddings, prevent overflow */
@@ -828,7 +828,7 @@
       </div>
     </div>
 
-    <!-- CORPUS MANIFEST — replaces author card on the lean edition -->
+    <!-- CORPUS MANIFEST -->
     <div class="author">
       <div class="photo-wrap">
         <div class="photo-header">
@@ -890,8 +890,8 @@
   <div class="about-grid">
     <div>
       <ul>
-        <li><b>Knows your business</b> — written once in <code>/onboard</code></li>
-        <li><b>Knows the $100M methodology cold</b> — vector-indexed locally</li>
+        <li><b>Knows your business</b>: written once in <code>/onboard</code></li>
+        <li><b>Knows the $100M methodology cold</b>: vector-indexed locally</li>
         <li><b>Audits your business</b> across 15 dimensions on demand</li>
         <li><b>Writes a 30-day action plan</b> from the audit</li>
         <li><b>Checks in on the plan</b> week by week</li>
@@ -923,7 +923,7 @@
         <div class="arrow">▼</div>
         <div class="stage out">
           <span class="role">answer</span>
-          Yes. Raise to R8k. Pricing Playbook says...
+          Yes. Raise to $8k. Pricing Playbook says...
         </div>
       </div>
     </div>
@@ -943,7 +943,7 @@
     </div>
     <div class="step">
       <h3>Get the folder</h3>
-      <p>You should have it from whoever sent you the link. The folder is called <code>hormozi-business-os</code>. Put it anywhere on your machine.</p>
+      <p>You should have it from whoever sent you the link. The folder is called <code>hormozi-3-books-plus-transcripts</code>. Put it anywhere on your machine.</p>
     </div>
     <div class="step">
       <h3>Install Python dependencies</h3>
@@ -952,7 +952,7 @@
     </div>
     <div class="step">
       <h3>Open the folder in Claude Code</h3>
-<pre class="terminal"><code>cd /path/to/hormozi-business-os
+<pre class="terminal"><code>cd /path/to/hormozi-3-books-plus-transcripts
 claude</code></pre>
     </div>
     <div class="step">
@@ -1044,7 +1044,7 @@ claude</code></pre>
         <div class="cmd">/update</div>
         <div class="when">when something changes</div>
         <div class="desc">Patches your profile. New price, new hire, new offer, new revenue stage. Confirms the diff before writing. Appends to changelog.</div>
-        <div class="ex">/update my new price is R20,000</div>
+        <div class="ex">/update my new price is $20,000</div>
       </div>
     </div>
 
@@ -1160,9 +1160,9 @@ python3 brain/watcher.py uninstall  <span class="pre-comment"># remove the sched
   </details>
 
   <details>
-    <summary>Why no playbooks?</summary>
+    <summary>Why these three books and not more?</summary>
     <div>
-      <p>This edition ships the three core $100M books plus the full video archive. The other repo (<code>hormozi-business-os</code>) ships all 22 books + supplementary playbooks. This one is for operators who want the original material in its original shape, or who want to integrate a clean, well-bounded corpus into a different system (a different RAG pipeline, a knowledge graph, fine-tuning).</p>
+      <p>The three core $100M books cover the load-bearing methodology: how to construct an offer, how to get leads, and how to design a money model. The supplementary playbooks distill from these. By indexing the books in their original form plus the full video archive, you get the source material as the author wrote and said it, not in condensed form. Synthesis still crosses topics: a pricing question can pull from $100M Offers, $100M Money Models, and a video that ties them together, in one retrieval.</p>
     </div>
   </details>
 </section>
@@ -1170,8 +1170,8 @@ python3 brain/watcher.py uninstall  <span class="pre-comment"># remove the sched
 <footer>
   <div class="footer-row">
     <div class="footer-line">
-      <span class="prompt">$</span> echo <span style="color: var(--c-string)">"made by"</span> &amp;&amp; <span class="made">Chad</span>
-      <span class="comment">&nbsp;// $100m-business-os · v0.7</span>
+      <span class="prompt">$</span> echo <span style="color: var(--c-string)">"$100m-business-os"</span>
+      <span class="comment">&nbsp;// v0.7 · personal use only</span>
     </div>
     <div class="footer-links">
       <a href="#install">install</a>

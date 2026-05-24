@@ -31,10 +31,10 @@ Listen for which yaml path(s) this touches. Common updates:
 
 | Operator says | YAML path(s) affected |
 |---|---|
-| "We raised to R20k" | `money.current_price_range` |
+| "We raised to $20k" | `money.current_price_range` |
 | "I hired two people" | `operations.team_size`, `operations.team_roles`, `operations.hours_in_vs_on_business` |
 | "We dropped X offer" | `offer.core_offer_description`, `money.pricing_model` |
-| "We're at R200k/mo now" | `money.revenue_stage` |
+| "We're at $200k/mo now" | `money.revenue_stage` |
 | "New website launched" | `reach.website_url`, `reach.website_purpose`, `reach.funnel_description` |
 | "Added a continuity tier" | `money.pricing_model` |
 | "Switched to monthly retainer" | `money.pricing_model`, `money.payment_terms` |

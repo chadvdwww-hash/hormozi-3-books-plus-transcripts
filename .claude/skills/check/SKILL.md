@@ -87,7 +87,7 @@ If watcher state file exists, report it:
 python3 brain/watcher.py status 2>&1
 ```
 
-Don't fail the diagnostic on this — it's optional. Just report if installed or not.
+Don't fail the diagnostic on this: it's optional. Just report if installed or not.
 
 ## Output shape
 
@@ -100,12 +100,12 @@ After every check, print a one-line status. At the end, summarize:
   [✓] Python 3.11.4
   [✓] Packages: fastembed, pymupdf, numpy, youtube-transcript-api
   [✓] Brain: 9,558 chunks × 384-dim
-  [✗] profile.yaml missing — run /onboard
+  [✗] profile.yaml missing: run /onboard
   [✓] Skills: 7 workflows registered
   [✓] Retrieval test: top score 0.81 (Pricing Playbook)
   [ ] Watcher: not installed (optional)
 
-  Status: 1 issue — run /onboard to fix.
+  Status: 1 issue: run /onboard to fix.
 ```
 
 ## Output rules
@@ -118,7 +118,7 @@ After every check, print a one-line status. At the end, summarize:
 ## Voice rules
 
 - No em-dashes.
-- No preambles. Skip "Let me check everything for you" — just start running checks.
+- No preambles. Skip "Let me check everything for you": just start running checks.
 - Skip cheerleading. "All checks passed" is enough.
 
 ## Common mistakes
@@ -129,6 +129,6 @@ After every check, print a one-line status. At the end, summarize:
 
 ## Red flags
 
-- All 6 checks fail. The clone is broken or the operator is in the wrong directory. Tell them: "Verify you are in the hormozi-business-os folder, then re-clone if needed."
+- All 6 checks fail. The clone is broken or the operator is in the wrong directory. Tell them: "Verify you are in the project folder, then re-clone if needed."
 - Python is missing entirely. Tell them: "Install Python 3.9+ from python.org, then run ./setup.sh."
-- The brain loads but retrieval returns empty results. The chunks.jsonl is desynced from index.npz — rebuild via ingest.py.
+- The brain loads but retrieval returns empty results. The chunks.jsonl is desynced from index.npz: rebuild via ingest.py.

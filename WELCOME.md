@@ -32,7 +32,7 @@ After onboarding, you have:
 | `/update` | When something changes | Patches `profile.yaml`. |
 | `/check` | If something feels off | Runs a diagnostic to verify the system is healthy. |
 
-You can also just talk in plain English. "Should I raise my prices?" routes to `/advise`. "I just raised prices to R20k" routes to `/update`.
+You can also just talk in plain English. "Should I raise my prices?" routes to `/advise`. "I just raised prices to $20k" routes to `/update`.
 
 ## What is in this folder
 
@@ -63,7 +63,7 @@ The only network traffic this system generates is your normal Claude Code conver
 
 ## Voice you can expect
 
-Direct. Blunt. Action-first. If your business model is broken, the strategist says so on sentence one. If you are pricing for free what should cost R20,000, it says so. This is the point.
+Direct. Blunt. Action-first. If your business model is broken, the strategist says so on sentence one. If you are pricing for free what should cost $20,000, it says so. This is the point.
 
 If you want softer feedback, you have ChatGPT. This is for operators who want the truth.
 

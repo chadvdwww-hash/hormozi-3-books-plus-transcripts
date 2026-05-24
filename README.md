@@ -1,14 +1,36 @@
-# $100M Business OS — Lean
+# $100M Business OS
 
 A strategic operating system for your business, grounded in the three core $100M books and the source YouTube corpus. Runs in Claude Code on your machine. Your business lives in files in this folder.
 
-This is the **lean** edition: source corpus is just the three books plus the full video and shorts transcript archive. No supplementary playbooks. If you want the full library (22 books + playbooks + 2,275 videos), use the `hormozi-business-os` repo instead.
-
 ## What this is
 
-A folder. Not an app. You open it in Claude Code and you have a business strategist trained on the $100M methodology and your specific business. After onboarding, you can run a full audit, get an action plan, and ask any business question.
+A folder. Not an app. You open it in Claude Code and you have a senior business strategist on your screen. The strategist knows your business (once you tell it) and knows the $100M methodology cold (already indexed locally). You can:
+
+- Get audited across 15 dimensions and scored 0 to 4 on each.
+- Get a prioritized 30-day action plan from the audit.
+- Walk that plan week by week with structured check-ins.
+- Ask any business question, anytime, and get a grounded answer with a real source citation.
 
 Your data never leaves your machine.
+
+## How it actually works (in depth)
+
+The system is two things bolted together: a **structured operating framework** (workflows that capture your business and turn diagnostics into actions) and a **local retrieval-augmented strategist** (a small vector database over $100M material that the strategist consults at the moment you ask).
+
+**1. Ingestion (already done; ships pre-built).**
+Source documents (3 books in markdown plus 2,275 video and shorts transcripts) are split into ~400-word overlapping chunks. Each chunk is converted into a 384-dimensional numerical fingerprint by a small open-source embedding model (`BAAI/bge-small-en-v1.5`, runs locally on CPU). All fingerprints are stacked into `brain/index.npz`. The matching source text plus metadata is saved to `brain/chunks.jsonl`. The full index is about 13 MB on disk. This step happens once. The repo ships the pre-built index so you do not need source PDFs.
+
+**2. Onboarding (you do this once).**
+`/onboard` walks you through eight stages of intake (about 15 minutes): identity, offer, customer, pricing and money, reach and marketing, sales, operations, goals. The strategist writes your structured profile to `profile.yaml` (canonical) and a readable view to `profile.md`. Mid-stage micro-observations call out patterns as they show up so it does not feel like a form.
+
+**3. Retrieval-augmented advice (every session).**
+When you ask the strategist anything, it converts your question into a 384-dim fingerprint using the same model. It computes cosine similarity against all chunk fingerprints in `brain/index.npz` (one numpy matrix multiplication, ~200 ms on CPU). It pulls the top 5 most relevant chunks, re-ranks them for diversity (MMR), and synthesizes an answer grounded in those chunks plus your `profile.yaml`. Every answer cites the source by name. Nothing leaves your machine; the strategist's responses route through your normal Claude Code session.
+
+**4. The diagnostic loop.**
+`/audit` scores 15 dimensions of your business (4 Offer, 3 Leads, 3 Sales, 2 Money Model, 3 Retention and Growth). Each score cites a profile field and a source chunk. `/plan` filters dimensions scored 0 or 1, ranks them by Impact times Cheapness times Urgency, picks the top 5, and sequences them across four weeks. `/checkin` walks that plan, marks what is done, surfaces what is stuck, and decides whether you are on pace, have an execution problem, or need to re-plan. `/update` patches your profile when something changes. `/check` runs a system diagnostic.
+
+**5. Optional daily watcher.**
+The folder includes `brain/watcher.py`. When enabled, it scans the source YouTube channel every morning, fetches transcripts for any new videos, embeds them, and appends to your local index. Pure client-side. No API keys. macOS only currently (uses `launchd`).
 
 ## What you need
 
@@ -23,148 +45,81 @@ Your data never leaves your machine.
 ./setup.sh
 ```
 
-That checks your Python version, installs the four dependencies (`fastembed`, `pymupdf`, `numpy`, `youtube-transcript-api`), verifies the brain index loads, and runs a smoke test.
+That checks your Python version, installs the four dependencies (`fastembed`, `pymupdf`, `numpy`, `youtube-transcript-api`), verifies the brain index loads, and runs a smoke test. If anything is wrong, it tells you the fix.
 
-Then:
+Then open the folder in Claude Code:
 
 ```bash
 claude
 ```
 
-And type `/onboard` to start. If anything feels off later, `/check` runs a diagnostic.
+And type `/onboard` to start. The strategist greets you and walks you through. If anything feels off later, type `/check` inside Claude Code for a diagnostic.
 
-## Optional dependency: the daily watcher
+## The seven workflows
 
-The watcher checks YouTube every morning and appends new videos to your index. Requires one extra package:
+| Command | When | What it does |
+|---|---|---|
+| `/onboard` | First-time only | Captures your business in `profile.yaml`. |
+| `/audit` | Quarterly | Scores 15 dimensions, writes `audit/findings.md`. |
+| `/plan` | After every audit | Picks 5 fixes, sequences over 30 days, writes `plan/actions.md`. |
+| `/checkin` | Weekly | Walks the plan, marks done, surfaces stuck. |
+| `/advise` | Anytime | Default for any business question. |
+| `/update` | When something changes | Patches `profile.yaml`. |
+| `/check` | If something feels off | Runs a diagnostic. |
 
-```bash
-brew install yt-dlp
-```
-
-macOS only currently (uses `launchd`); Linux/Windows users can run `python3 brain/watcher.py run` manually or wire it into their own scheduler.
-
-## One-time setup (build the brain)
-
-The strategist queries a local vector index over the three books plus the video transcript archive. The index ships pre-built. To rebuild from source:
-
-```bash
-python3 brain/ingest.py \
-  --source /path/to/books-markdown \
-  --source /path/to/transcripts/videos \
-  --source /path/to/transcripts/shorts
-```
-
-Books should be markdown files for the three source titles. Transcripts should be YouTube-format `.txt` files. Markdown is preferred because text extraction is cleaner. One-time, then forget about it.
-
-## Optional: daily watcher for new videos
-
-The folder includes `brain/watcher.py`. When enabled, it scans the source YouTube channel each morning, fetches transcripts for any new videos, and appends them to your local index. Pure client-side. No API keys.
-
-To enable on macOS:
-
-```bash
-python3 brain/watcher.py install     # installs a launchd job that runs daily at 08:00
-python3 brain/watcher.py run         # run it now without waiting
-python3 brain/watcher.py status      # see last run, videos seen, schedule state
-python3 brain/watcher.py uninstall   # remove the schedule
-```
-
-Opt-in. If you skip this, the index stays static.
-
-## How to start
-
-```bash
-cd /path/to/hormozi-3-books-plus-transcripts
-claude
-```
-
-Then in the Claude session:
-
-```
-/onboard
-```
-
-That kicks off the intake. Answer the questions. Claude writes your business profile to `profile.yaml` and `profile.md`.
-
-When onboarding is done, you have six workflows:
-
-- **`/onboard`** — intake (run this first). Also offers to install the daily watcher.
-- **`/audit`** — full 15-dimension business diagnostic. Versioned (dated snapshot + latest pointer). Compares to prior audit.
-- **`/plan`** — prioritized 30-day action plan from the latest audit. Versioned.
-- **`/checkin`** — walk the current plan, mark actions done, dig into stuck items, decide on-pace vs re-plan.
-- **`/advise`** — any business question, anytime. Auto-detects profile drift mid-answer.
-- **`/update`** — patch the profile when something changes. Touches `profile.yaml` (canonical), re-renders `profile.md`.
-
-You can also just talk. "Why isn't my landing page converting?" Claude reads your profile, pulls the relevant chunks from the corpus, and tells you the highest-leverage move.
+You can also just talk in plain English. "Should I raise my prices?" routes to `/advise`. "I just raised prices to $20k" routes to `/update`.
 
 ## What is in the folder
 
 ```
-hormozi-3-books-plus-transcripts/
-├── CLAUDE.md                 the strategist personality (loaded every session)
+.
+├── CLAUDE.md                 strategist personality (loaded every session)
 ├── README.md                 this file
 ├── LICENSE.md                personal use, no redistribution
-├── profile.yaml              YOUR business, structured (canonical, written by /onboard)
-├── profile.md                YOUR business, readable view (re-rendered from yaml)
-├── audit/
-│   ├── findings.md           latest 15-dimension diagnostic (pointer)
-│   └── findings-YYYY-MM-DD.md  dated snapshots
-├── plan/
-│   ├── actions.md            latest action plan (pointer)
-│   ├── actions-YYYY-MM-DD.md  dated snapshots
-│   └── checkins/             checkin history
-├── conversations/
-│   └── YYYY-MM-DD.md         daily Q&A log
-├── _qa/
-│   ├── eval-queries.json     retrieval quality eval set
-│   └── eval.py               run after every re-ingestion
+├── WELCOME.md                first-read intro
+├── setup.sh                  one-command install
+├── profile.yaml              YOUR business (created by /onboard)
+├── profile.md                readable view of the same
+├── audit/                    dated 15-dimension diagnostics
+├── plan/                     dated 30-day action plans + checkins
+├── conversations/            daily Q&A log
+├── _qa/                      retrieval quality eval set
 ├── brain/
-│   ├── ingest.py             corpus indexer (md, pdf, transcript txt)
-│   ├── query.py              runtime retrieval interface
+│   ├── index.npz             pre-built vector index (the corpus)
+│   ├── chunks.jsonl          source text per chunk
+│   ├── ingest.py             rebuild index from source
+│   ├── query.py              semantic retrieval (cosine + MMR)
 │   ├── watcher.py            optional daily YouTube watcher
-│   ├── index.npz             vector index (embeddings)
-│   ├── chunks.jsonl          source text chunks
-│   ├── _audit-dimensions.md  15-dimension rubric (used by /audit)
-│   └── _plan-algorithm.md    prioritization algorithm (used by /plan)
+│   ├── _audit-dimensions.md  15-dimension rubric
+│   └── _plan-algorithm.md    prioritization spec
 └── .claude/skills/           the workflows
 ```
 
 ## What the brain contains
 
-A local vector index over the **lean** corpus:
+A local vector index over:
 
 - **3 markdown books** ($100M Offers, $100M Leads, $100M Money Models)
 - **173 long-form YouTube transcripts** (videos and streams over the last 2+ years)
 - **2,102 YouTube Shorts transcripts**
 
-If the daily watcher is enabled, the corpus grows automatically.
-
-The strategist queries the index semantically every time it needs reasoning. No flat-file reading, no hardcoded categories. Synthesis crosses the three books and the video archive transparently. A pricing question can pull from $100M Offers AND a video where the same idea is stated differently AND a Short that ties it to retention, in one retrieval.
-
-## Why the lean edition
-
-The full edition ships 22 books and playbooks. This one ships only the three source books that the playbooks were distilled from, plus the full video corpus. Two reasons to prefer lean:
-
-1. You want the source material in its original form, not condensed.
-2. You want to integrate the corpus into another system (a different RAG pipeline, a knowledge graph, fine-tuning) and need a clean, well-bounded dataset.
-
-If you want the full surface area (every playbook by topic, plus journals and supplementary material), use the full repo.
+If the daily watcher is enabled, the corpus grows automatically as new videos appear.
 
 ## Privacy
 
 This is your folder on your machine. Nothing is sent anywhere except your normal Claude Code traffic to Anthropic. No backend, no analytics, no telemetry from this OS.
 
-Your `profile.md`, audits, plans, and conversations stay local. If you want them shared (e.g., with a co-founder), share the folder yourself.
+Your `profile.yaml`, audits, plans, and conversations stay local. If you want them shared (for example, with a co-founder), share the folder yourself.
 
 ## Voice
 
-The system speaks like a $100M-trained strategist. Direct. Blunt. Action-first. If your business model is broken, it will tell you on sentence one. If you are pricing for free that should cost R20,000, it will tell you. This is the point.
+The strategist speaks like a $100M-trained operator. Direct. Blunt. Action-first. If your business model is broken, it says so on sentence one. If you are pricing for free what should cost $20,000, it says so. This is the point.
 
-If you want softer feedback, you have ChatGPT. This is for operators who want the truth.
+If you want softer feedback, use ChatGPT. This is for operators who want the truth.
 
-## A note on the source
+## License
 
-The framework files are a strategist's distillation of publicly available source material. They are not verbatim copies. If you want the originals, the books are available wherever books are sold.
+Personal use only. See `LICENSE.md`.
 
 ## Questions
 
