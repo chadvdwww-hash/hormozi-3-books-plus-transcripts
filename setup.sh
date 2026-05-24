@@ -142,8 +142,9 @@ try:
     embeddings, chunks = load_index()
     n, dim = embeddings.shape
     embedder = TextEmbedding(model_name=EMBED_MODEL)
-    qvec = next(iter(embedder.embed(["should I raise prices"])))
-    results = search(embeddings, chunks, qvec, top_k=1, mmr_lambda=1.0)
+    q = "should I raise prices"
+    qvec = next(iter(embedder.embed([q])))
+    results = search(embeddings, chunks, q, qvec, top_k=1, mmr_lambda=1.0)
     if not results or results[0]["score"] < 0.3:
         print(f"Retrieval returned weak results (top score {results[0]['score'] if results else 'none'})")
         sys.exit(1)
