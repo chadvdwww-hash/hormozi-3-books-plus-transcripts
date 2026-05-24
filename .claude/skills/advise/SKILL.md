@@ -26,11 +26,21 @@ If the question is a real advisory question, continue.
 
 1. Read `profile.md` if not already in context.
 2. Pick the angle. What is this question actually about: offer, pricing, leads, hooks, sales, objections, money model, unit economics, retention, brand, scaling? Often two.
-3. Query the brain. Construct 1 to 3 natural-language queries from the operator's situation, not generic terms.
+3. Query the brain. **Default to multi-angle batch queries.** Batch mode loads the embedding model once and runs all queries in parallel, so 3 angles cost roughly the same as 1. Single queries are the exception, not the rule.
 
-   Good query: `python3 brain/query.py "B2B services founder, $30k/mo revenue, lead flow dried up, content-led" --top-k 5`
+   ```bash
+   python3 brain/query.py --batch \
+     "B2B services founder, $30k/mo revenue, lead flow dried up" \
+     "founder-led sales, content-light, what to do first" \
+     "scaling from $30k to $100k per month, top-of-funnel weak" \
+     --top-k 4
+   ```
 
-   Bad query: `python3 brain/query.py "leads"`
+   Construct 2 to 3 angles from different framings: the operator's specific situation, the underlying $100M concept, and a Hormozi-terminology version (e.g. "Core Four", "Rule of 100"). The fused retrieval is more robust than any single query.
+
+   Avoid generic queries like `"leads"` — they retrieve too broadly.
+
+   Cite each chunk by source. For transcript chunks, prefer the `deep_link` field if present in the returned JSON — it lets the operator click through to the exact moment in the video.
 
    When the question is broad, use batch mode to hit it from multiple angles:
 

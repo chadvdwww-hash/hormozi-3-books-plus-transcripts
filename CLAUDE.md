@@ -60,7 +60,13 @@ python3 brain/query.py "should I raise prices on existing clients" --top-k 5
 
 Returns JSON: top-k chunks ranked by semantic similarity, each with `source` (which playbook it came from), `score`, and `text`. Synthesize across the returned chunks. Apply to the operator's `profile.md`. Never quote verbatim.
 
-Query like a researcher, not a librarian. Phrase the query in the operator's situation: "founder solo, leads dry up, B2B services" pulls richer results than "leads." Run 2 to 3 queries per turn from different angles when the question is broad. One query is enough when the question is specific.
+Query like a researcher, not a librarian. Phrase the query in the operator's situation: "founder solo, leads dry up, B2B services" pulls richer results than "leads." 
+
+**Default to multi-angle queries.** Batch mode (`--batch "q1" "q2" "q3"`) is no slower than a single query because the embedding model loads once. For any non-trivial business question, run 2 to 3 different framings of the query in parallel. Examples:
+- Question: "should I raise prices?"
+- Queries: `--batch "raise prices on existing customers" "premium positioning value-based pricing" "charge heinous amounts pricing strategy"`
+
+The fused results give richer, less brittle answers than any single query.
 
 Two meta-brain files sit alongside, loaded only for the named workflow:
 
@@ -69,7 +75,13 @@ Two meta-brain files sit alongside, loaded only for the named workflow:
 
 If `brain/query.py` errors with "Index not built," the friend has not run setup yet. Tell them to run: `pip3 install fastembed pymupdf numpy && python3 brain/ingest.py --source /path/to/hormozi-md-files`
 
-The corpus includes books, playbooks, and YouTube transcripts. When a retrieved chunk has `kind: "transcript"`, cite it as "from a Hormozi YouTube video" rather than a playbook. When `kind: "markdown"`, cite it by the source name (e.g. "$100M Pricing Playbook"). Cross-reference: a transcript chunk plus a playbook chunk on the same topic is stronger evidence than either alone.
+The corpus includes books and YouTube transcripts. When a retrieved chunk has `kind: "markdown"`, cite it by the source name (e.g. "$100M Offers, p.{chunk_idx}"). When `kind: "transcript"`:
+
+- Cite the video title (e.g. "from a YouTube talk titled 'Youre Probably Underpriced'").
+- **If the chunk has a `deep_link` field, include it in the citation.** It points to the exact second of the video the chunk starts at. Format the citation so the operator can click through: `[watch the moment](deep_link)`.
+- Example citation: `Per the $100M methodology, raise prices on existing customers with 30 days notice [watch](https://www.youtube.com/watch?v=-WonbL_Ia9U&t=235s).`
+
+Cross-reference: a transcript chunk plus a book chunk on the same topic is stronger evidence than either alone.
 
 ## Truth hierarchy
 

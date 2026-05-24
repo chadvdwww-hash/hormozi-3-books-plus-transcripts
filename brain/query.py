@@ -218,18 +218,25 @@ def search(
     else:
         final_indices = [int(i) for i in fused[:top_k]]
 
-    return [
-        {
+    out = []
+    for rank, idx in enumerate(final_indices, 1):
+        c = chunks[idx]
+        entry = {
             "rank": rank,
             "score": float(dense_scores[idx]),
-            "source": chunks[idx].get("source", ""),
-            "kind": chunks[idx].get("kind", ""),
-            "id": chunks[idx].get("id", ""),
-            "url": chunks[idx].get("url", ""),
-            "text": chunks[idx]["text"],
+            "source": c.get("source", ""),
+            "kind": c.get("kind", ""),
+            "id": c.get("id", ""),
+            "url": c.get("url", ""),
+            "text": c["text"],
         }
-        for rank, idx in enumerate(final_indices, 1)
-    ]
+        # Transcripts may carry a deep link to the exact moment in the video.
+        if c.get("deep_link"):
+            entry["deep_link"] = c["deep_link"]
+        if c.get("start_seconds") is not None:
+            entry["start_seconds"] = c["start_seconds"]
+        out.append(entry)
+    return out
 
 
 def main():

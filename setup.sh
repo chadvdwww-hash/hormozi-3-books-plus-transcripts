@@ -116,9 +116,17 @@ if [ "$INDEX_BYTES" -lt 1000000 ]; then
   hint "Delete the folder and re-clone"
   bigfail
 fi
-# Build BM25 keyword index if missing (lightweight, runs once)
+# Build BM25 keyword index if missing OR stale (chunks newer than index)
+NEED_BM25_REBUILD=0
 if [ ! -f "brain/bm25.pkl" ]; then
-  warn "BM25 keyword index missing; building it now (one-time, ~5 seconds)"
+  NEED_BM25_REBUILD=1
+  REASON="missing"
+elif [ "brain/chunks.jsonl" -nt "brain/bm25.pkl" ]; then
+  NEED_BM25_REBUILD=1
+  REASON="stale (chunks updated)"
+fi
+if [ "$NEED_BM25_REBUILD" = "1" ]; then
+  warn "BM25 keyword index $REASON; building it now (~5 seconds)"
   if python3 brain/build_bm25.py > /dev/null 2>&1; then
     ok "BM25 index built ($(wc -c < brain/bm25.pkl | awk '{print int($1/1024/1024)}') MB)"
   else

@@ -52,6 +52,9 @@ def clean(text: str) -> str:
     return text.strip()
 
 
+TS_INLINE_RE = re.compile(r"<<TS:([\d.]+)>>")
+
+
 def chunk_text(text: str, chunk_size: int, overlap: int) -> list[str]:
     """Word-based chunking. chunk_size and overlap are in words."""
     words = text.split()
@@ -64,6 +67,41 @@ def chunk_text(text: str, chunk_size: int, overlap: int) -> list[str]:
         if len(piece.split()) < 30:
             continue
         chunks.append(piece)
+        if start + chunk_size >= len(words):
+            break
+    return chunks
+
+
+def chunk_with_timestamps(text: str, chunk_size: int, overlap: int) -> list[tuple[str, float | None]]:
+    """Word-based chunking that preserves the first timestamp of each chunk.
+
+    Input text has inline <<TS:NN.NN>> markers from read_transcript_with_timestamps.
+    For each chunk, finds the first timestamp marker and records its seconds,
+    then strips all markers from the chunk text.
+
+    Returns list of (clean_text, start_seconds_or_None).
+    """
+    words = text.split()
+    if not words:
+        return []
+    chunks: list[tuple[str, float | None]] = []
+    step = max(1, chunk_size - overlap)
+    for start in range(0, len(words), step):
+        raw_piece = " ".join(words[start : start + chunk_size])
+        # First timestamp in this chunk:
+        first_ts = None
+        m = TS_INLINE_RE.search(raw_piece)
+        if m:
+            try:
+                first_ts = float(m.group(1))
+            except ValueError:
+                first_ts = None
+        # Strip all timestamp markers:
+        clean_piece = TS_INLINE_RE.sub("", raw_piece)
+        clean_piece = re.sub(r"\s+", " ", clean_piece).strip()
+        if len(clean_piece.split()) < 30:
+            continue
+        chunks.append((clean_piece, first_ts))
         if start + chunk_size >= len(words):
             break
     return chunks
@@ -89,9 +127,16 @@ def read_pdf(path: Path) -> tuple[str, dict]:
     return " ".join(parts), {"kind": "pdf"}
 
 
+TIMESTAMP_LINE_RE = re.compile(r"^\s*\[\s*([\d.:]+)\s*\]\s*(.*)$")
+
+
 def read_transcript(path: Path) -> tuple[str, dict]:
     """YouTube transcript .txt files with `# Title: ...` / `# Video ID: ...` headers
-    and `[ 12.34] text` lines. Strip timestamps, capture metadata."""
+    and `[ 12.34] text` lines.
+
+    Embeds timestamps as `<<TS:NN.NN>>` markers inline so chunk_with_timestamps
+    can extract the first timestamp per chunk. Header metadata captured separately.
+    """
     raw = path.read_text(errors="ignore")
     meta: dict = {"kind": "transcript"}
     body_lines = []
@@ -102,10 +147,33 @@ def read_transcript(path: Path) -> tuple[str, dict]:
                 key = m.group(1).strip().lower().replace(" ", "_")
                 meta[key] = m.group(2).strip()
             continue
-        clean_line = TIMESTAMP_RE.sub("", line).strip()
-        if clean_line:
-            body_lines.append(clean_line)
-    return clean(" ".join(body_lines)), meta
+        ts_match = TIMESTAMP_LINE_RE.match(line)
+        if ts_match:
+            ts_str, content = ts_match.group(1), ts_match.group(2).strip()
+            # Convert HH:MM:SS or MM:SS or SS.ss to seconds
+            try:
+                if ":" in ts_str:
+                    parts = ts_str.split(":")
+                    total = 0.0
+                    for p in parts:
+                        total = total * 60 + float(p)
+                    ts_seconds = total
+                else:
+                    ts_seconds = float(ts_str)
+                if content:
+                    body_lines.append(f"<<TS:{ts_seconds:.2f}>>{content}")
+            except ValueError:
+                if content:
+                    body_lines.append(content)
+        else:
+            stripped = line.strip()
+            if stripped:
+                body_lines.append(stripped)
+    # Don't run clean() here because it would collapse the timestamp markers' formatting
+    # The markers will be stripped during chunking.
+    body = " ".join(body_lines)
+    body = re.sub(r"[​‌‍﻿]", "", body)
+    return body, meta
 
 
 def read_text(path: Path) -> tuple[str, dict]:
@@ -141,16 +209,43 @@ def build_corpus(source_dirs: list[Path], chunk_size: int, overlap: int) -> list
             if not text:
                 continue
             source_name = path.stem.lstrip("_").strip()
-            chunks = chunk_text(text, chunk_size, overlap)
-            for idx, chunk in enumerate(chunks):
-                record = {
-                    "id": f"{meta['kind']}::{source_name}::{idx:04d}",
-                    "text": chunk,
-                    "source": source_name,
-                    "chunk_idx": idx,
-                    **meta,
-                }
-                records.append(record)
+
+            if meta.get("kind") == "transcript":
+                # Transcript: preserve first-timestamp per chunk + build a deep-link URL
+                ts_chunks = chunk_with_timestamps(text, chunk_size, overlap)
+                video_id = meta.get("video_id")
+                base_url = meta.get("url", "")
+                for idx, (chunk_text_str, start_seconds) in enumerate(ts_chunks):
+                    record = {
+                        "id": f"{meta['kind']}::{source_name}::{idx:04d}",
+                        "text": chunk_text_str,
+                        "source": source_name,
+                        "chunk_idx": idx,
+                        **meta,
+                    }
+                    if start_seconds is not None:
+                        record["start_seconds"] = round(start_seconds, 2)
+                        # YouTube deep link: ?t=NNNs (integer seconds for cleaner URL)
+                        if video_id:
+                            record["deep_link"] = f"https://www.youtube.com/watch?v={video_id}&t={int(start_seconds)}s"
+                        elif base_url:
+                            sep = "&" if "?" in base_url else "?"
+                            record["deep_link"] = f"{base_url}{sep}t={int(start_seconds)}s"
+                    records.append(record)
+            else:
+                # Books, PDFs, plain text: no timestamps
+                # Run clean() here since transcript path skipped it
+                clean_text = clean(text)
+                chunks = chunk_text(clean_text, chunk_size, overlap)
+                for idx, chunk in enumerate(chunks):
+                    record = {
+                        "id": f"{meta['kind']}::{source_name}::{idx:04d}",
+                        "text": chunk,
+                        "source": source_name,
+                        "chunk_idx": idx,
+                        **meta,
+                    }
+                    records.append(record)
     return records
 
 
