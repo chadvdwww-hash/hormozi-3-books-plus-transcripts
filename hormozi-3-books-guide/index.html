@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="$100M Business OS — a folder that becomes a Hormozi-trained business strategist on your machine. The operator manual." />
+<title>$100M Business OS · Lean · Operator Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* light base */
+    --bg: #fafaf7;             /* warm off-white, paper */
+    --surface: #ffffff;         /* panels, cards */
+    --surface-2: #f6f6f1;       /* code bg */
+    --rule: #e5e5e0;
+    --rule-2: #d6d6cf;
+    --ink: #0a0a0a;
+    --ink-2: #1f1f1f;
+    --muted: #6b7280;
+    --dim: #a3a3a3;
+
+    /* code editor syntax (light) */
+    --c-comment: #6b7280;
+    --c-keyword: #6b1ec4;
+    --c-string:  #2d8f47;
+    --c-fn:      #1b5eab;
+    --c-num:     #d97706;
+    --c-punct:   #4a4a4a;
+
+    /* $100M book palette */
+    --green:   #2d8f47;        /* Money Models */
+    --green-soft: rgba(45, 143, 71, 0.10);
+    --blue:    #1b5eab;        /* Leads */
+    --blue-soft: rgba(27, 94, 171, 0.10);
+    --purple:  #6b1ec4;        /* Offers */
+    --purple-soft: rgba(107, 30, 196, 0.10);
+    --amber:   #d97706;        /* the constant Hormozi yellow, deeper for light */
+    --amber-soft: rgba(217, 119, 6, 0.10);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); scroll-behavior: smooth; }
+  body {
+    font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
+    font-size: 16px; line-height: 1.65;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--green); color: #ffffff; }
+  a { color: var(--c-fn); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
+  a:hover { border-bottom-color: currentColor; }
+
+  /* DISPLAY HEADER FONT */
+  .display {
+    font-family: "Anton", "Inter", sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+  }
+  .mono { font-family: "JetBrains Mono", monospace; }
+
+  /* SYNTAX TOKENS — used throughout */
+  .tk-c { color: var(--c-comment); }   /* comments */
+  .tk-k { color: var(--c-keyword); font-weight: 500; }  /* keywords */
+  .tk-s { color: var(--c-string); }   /* strings */
+  .tk-f { color: var(--c-fn); }       /* function names, identifiers */
+  .tk-n { color: var(--c-num); }      /* numbers */
+  .tk-p { color: var(--c-punct); }    /* punctuation */
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(250,250,247,0.85);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    display: flex; align-items: baseline; gap: 4px;
+  }
+  .brand .prompt { color: var(--green); margin-right: 6px; }
+  .brand .path { color: var(--ink); }
+  .brand .ext { color: var(--muted); }
+
+  .nav-links { display: none; gap: 22px; font-size: 12px; font-family: "JetBrains Mono", monospace; }
+  .nav-links a { color: var(--muted); border-bottom: none; }
+  .nav-links a:hover { color: var(--green); }
+  .nav-links a::before { content: ""; color: var(--c-comment); margin-right: 4px; }
+
+  .nav-cta {
+    display: inline-flex; align-items: center;
+    background: var(--ink); color: var(--bg);
+    padding: 10px 16px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--ink);
+    transition: background 0.15s, color 0.15s;
+    border-bottom: 1px solid var(--ink);
+  }
+  .nav-cta:hover { background: var(--green); color: #fff; border-color: var(--green); }
+  @media (min-width: 768px) {
+    .nav-links { display: flex; }
+  }
+
+  /* PAGE */
+  .page { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* HERO */
+  .hero {
+    padding: 72px 0 88px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  @media (min-width: 920px) {
+    .hero-grid { grid-template-columns: 1.5fr 1fr; gap: 80px; }
+  }
+
+  .file-tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .file-tag::before {
+    content: "";
+    display: inline-block;
+    width: 7px; height: 7px;
+    background: var(--green); border-radius: 50%;
+  }
+
+  h1 {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-size: clamp(56px, 11vw, 132px);
+    line-height: 0.9;
+    margin: 0 0 28px;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  h1 .row { display: block; }
+  h1 .green { color: var(--green); }
+
+  .hero-subtitle {
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-size: clamp(17px, 2.1vw, 24px);
+    line-height: 1.25;
+    color: var(--ink);
+    margin: 0 0 28px;
+    max-width: 34ch;
+  }
+  .hero-subtitle .em { color: var(--green); }
+
+  .lede {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 17px);
+    line-height: 1.6;
+    max-width: 56ch;
+    margin: 0 0 32px;
+  }
+  .lede .hl { color: var(--ink); font-weight: 600; }
+
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 14px 22px;
+    border: 1.5px solid;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 8px;
+    border-bottom: 1.5px solid;
+  }
+  .btn-green {
+    background: var(--green); border-color: var(--green); color: #fff;
+  }
+  .btn-green:hover {
+    background: #1f6f37; border-color: #1f6f37;
+  }
+  .btn-ghost {
+    background: transparent; border-color: var(--ink); color: var(--ink);
+  }
+  .btn-ghost:hover { background: var(--ink); color: var(--bg); }
+
+  /* AUTHOR CARD — simple */
+  .author {
+    display: flex; flex-direction: column; align-items: flex-start;
+    gap: 14px;
+  }
+  @media (min-width: 920px) {
+    .author { align-items: center; text-align: center; }
+  }
+  .author .photo-wrap {
+    width: 100%;
+    max-width: 360px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    box-shadow: 0 1px 0 var(--rule), 0 24px 48px -28px rgba(0,0,0,0.18);
+  }
+  .author .photo-header {
+    border-bottom: 1px solid var(--rule);
+    padding: 10px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .author .photo-header .dots { display: inline-flex; gap: 5px; }
+  .author .photo-header .dots span { width: 8px; height: 8px; background: var(--rule-2); border-radius: 50%; }
+  .author .photo-header .dots span:first-child { background: var(--green); }
+  .author .photo-header .filename { font-weight: 500; }
+  .author .photo {
+    width: 100%; aspect-ratio: 1 / 1;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+  .author .photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .author .photo .fallback {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-family: "JetBrains Mono", monospace; font-size: 11px;
+  }
+  .author .caption {
+    width: 100%;
+    padding: 14px 16px;
+    border-top: 1px solid var(--rule);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .author .caption .field { color: var(--muted); }
+  .author .caption .value { color: var(--ink); font-weight: 500; }
+  .author .caption .value.green { color: var(--green); }
+
+  /* HERO STATS */
+  .hero-stats {
+    margin-top: 72px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  @media (min-width: 720px) {
+    .hero-stats { grid-template-columns: repeat(4, 1fr); }
+  }
+  .hs { background: var(--surface); padding: 22px 22px; position: relative; }
+  .hs::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 3px;
+  }
+  .hs.green::before  { background: var(--green); }
+  .hs.blue::before   { background: var(--blue); }
+  .hs.purple::before { background: var(--purple); }
+  .hs.amber::before  { background: var(--amber); }
+  .hs .v {
+    font-family: "Anton", sans-serif;
+    font-size: clamp(28px, 4vw, 36px);
+    color: var(--ink);
+    line-height: 1; letter-spacing: -0.01em; margin-bottom: 10px;
+  }
+  .hs.green  .v { color: var(--green); }
+  .hs.blue   .v { color: var(--blue); }
+  .hs.purple .v { color: var(--purple); }
+  .hs.amber  .v { color: var(--amber); }
+  .hs .k {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .hs .k::before { content: "// "; color: var(--c-comment); }
+
+  /* SECTIONS */
+  section {
+    padding: 96px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  section:last-of-type { border-bottom: none; }
+
+  .sec-eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .sec-eyebrow .sym { color: var(--c-keyword); margin-right: 6px; }
+  .sec-eyebrow .name { color: var(--c-fn); }
+
+  h2 {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-size: clamp(40px, 6vw, 64px);
+    line-height: 0.98;
+    margin: 0 0 18px;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  h2 .green  { color: var(--green); }
+  h2 .blue   { color: var(--blue); }
+  h2 .purple { color: var(--purple); }
+  h2 .amber  { color: var(--amber); }
+
+  .sec-lede {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 17px);
+    max-width: 64ch;
+    margin: 0 0 48px;
+  }
+  p { margin: 0 0 16px; }
+  .muted { color: var(--muted); }
+
+  code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.88em;
+    background: var(--surface-2);
+    color: var(--c-string);
+    padding: 2px 7px;
+    border: 1px solid var(--rule);
+  }
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+  }
+  pre.terminal {
+    background: var(--surface-2);
+  }
+  pre.terminal::before {
+    content: "$ ";
+    color: var(--green);
+    font-weight: 700;
+  }
+  pre code { background: transparent; border: 0; padding: 0; color: inherit; }
+  .pre-comment { color: var(--c-comment); }
+
+  /* ABOUT */
+  .about-grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
+  @media (min-width: 920px) { .about-grid { grid-template-columns: 1fr 1fr; gap: 64px; } }
+  .about-grid ul { list-style: none; padding: 0; margin: 0 0 20px; }
+  .about-grid li {
+    padding: 14px 0 14px 30px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.55;
+    position: relative;
+  }
+  .about-grid li::before {
+    content: "→";
+    position: absolute;
+    left: 0; top: 14px;
+    color: var(--green);
+    font-weight: 700;
+  }
+  .about-grid li b { color: var(--ink); font-weight: 600; }
+
+  .pipeline {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+  .pipeline-header {
+    border-bottom: 1px solid var(--rule);
+    padding: 10px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface-2);
+    font-size: 11px; color: var(--muted);
+  }
+  .pipeline-header .dots { display: inline-flex; gap: 5px; }
+  .pipeline-header .dots span { width: 8px; height: 8px; background: var(--rule-2); border-radius: 50%; }
+  .pipeline-header .dots span:first-child { background: var(--green); }
+  .pipeline-body { padding: 20px; }
+  .pipeline .stage {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--rule);
+    padding: 12px 14px;
+    margin: 6px 0;
+  }
+  .pipeline .stage.you   { border-left-color: var(--purple); }
+  .pipeline .stage.s     { border-left-color: var(--blue); }
+  .pipeline .stage.brain { border-left-color: var(--green); background: var(--green-soft); }
+  .pipeline .stage.out   { border-left-color: var(--amber); }
+  .pipeline .role {
+    color: var(--muted); font-size: 10px;
+    letter-spacing: 0.06em;
+    display: block; margin-bottom: 4px;
+  }
+  .pipeline .role::before { content: "// "; }
+  .pipeline .arrow { text-align: center; color: var(--dim); margin: 4px 0; font-size: 14px; }
+
+  /* INSTALL STEPS */
+  .steps { display: flex; flex-direction: column; gap: 12px; counter-reset: step; }
+  .step {
+    counter-increment: step;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 24px 24px 22px 88px;
+    position: relative;
+    transition: border-color 0.15s, transform 0.12s;
+  }
+  .step:hover { border-color: var(--green); }
+  .step::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 20px; top: 22px;
+    font-family: "Anton", sans-serif;
+    font-size: 30px;
+    color: var(--green);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .step h3 {
+    margin: 0 0 8px;
+    font-family: "Anton", sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+  }
+  .step p { margin: 0 0 12px; color: var(--muted); font-size: 14.5px; }
+  .step p:last-child { margin-bottom: 0; }
+  .step pre { margin: 12px 0 0; font-size: 12.5px; }
+  @media (max-width: 600px) {
+    .step { padding: 22px 18px 20px; }
+    .step::before { position: static; display: inline-block; margin-bottom: 10px; font-size: 26px; }
+  }
+
+  /* WORKFLOWS */
+  .wf-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 720px) { .wf-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1080px) { .wf-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .wf {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    transition: border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .wf::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--rule);
+  }
+  .wf.green::before  { background: var(--green); }
+  .wf.blue::before   { background: var(--blue); }
+  .wf.purple::before { background: var(--purple); }
+  .wf.amber::before  { background: var(--amber); }
+  .wf:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -16px rgba(0,0,0,0.18);
+    border-color: var(--ink-2);
+  }
+
+  .wf-header {
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--rule);
+    padding: 10px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .wf-header .dots { display: inline-flex; gap: 5px; }
+  .wf-header .dots span { width: 8px; height: 8px; background: var(--rule-2); border-radius: 50%; }
+  .wf.green  .wf-header .dots span:first-child { background: var(--green); }
+  .wf.blue   .wf-header .dots span:first-child { background: var(--blue); }
+  .wf.purple .wf-header .dots span:first-child { background: var(--purple); }
+  .wf.amber  .wf-header .dots span:first-child { background: var(--amber); }
+
+  .wf-body { padding: 22px 22px 22px; flex: 1; display: flex; flex-direction: column; }
+  .wf .cmd {
+    font-family: "Anton", sans-serif;
+    font-size: 28px;
+    margin-bottom: 6px;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .wf.green  .cmd { color: var(--green); }
+  .wf.blue   .cmd { color: var(--blue); }
+  .wf.purple .cmd { color: var(--purple); }
+  .wf.amber  .cmd { color: var(--amber); }
+
+  .wf .when {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px; color: var(--muted);
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+  }
+  .wf .when::before { content: "// "; }
+  .wf .desc { font-size: 14px; line-height: 1.55; margin-bottom: 14px; flex: 1; color: var(--ink); }
+  .wf .ex {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11.5px;
+    color: var(--muted);
+    padding-top: 12px;
+    border-top: 1px dashed var(--rule-2);
+    margin-top: auto;
+  }
+  .wf .ex::before { content: "$ "; color: var(--green); }
+
+  /* WATCHER — green-themed (Money Models) */
+  .watcher {
+    background:
+      linear-gradient(135deg, var(--green-soft), transparent 60%),
+      var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--green);
+    padding: 32px 32px 28px;
+  }
+  .watcher .badge {
+    display: inline-block;
+    background: var(--green);
+    color: #fff;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .watcher h3 {
+    margin: 0 0 12px;
+    font-family: "Anton", sans-serif;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .watcher p { font-size: 15px; margin-bottom: 14px; color: var(--ink); }
+  .watcher pre { background: var(--surface-2); margin-bottom: 14px; border-color: var(--rule); }
+  .watcher pre:last-child { margin-bottom: 0; }
+
+  /* HOW IT WORKS */
+  .how-text { max-width: 64ch; }
+  .how-text p { font-size: 16px; line-height: 1.7; }
+  .how-text p strong { color: var(--green); font-weight: 700; }
+  .technical-names {
+    margin-top: 36px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 18px 22px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    line-height: 1.85;
+  }
+
+  /* FAQ */
+  details {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    margin-bottom: 8px;
+    transition: border-color 0.15s;
+  }
+  details[open] { border-color: var(--green); }
+  details summary {
+    padding: 18px 22px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    list-style: none;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    color: var(--ink);
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::before {
+    content: "Q.";
+    color: var(--green);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    font-weight: 700;
+    margin-right: 14px;
+    flex-shrink: 0;
+  }
+  details summary::after {
+    content: "+";
+    color: var(--green); font-size: 24px; line-height: 1;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  details[open] summary::after { transform: rotate(45deg); }
+  details > div {
+    padding: 0 22px 20px 56px;
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.7;
+    position: relative;
+  }
+  details > div::before {
+    content: "A.";
+    color: var(--green);
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    position: absolute;
+    left: 22px; top: 0;
+    font-size: 13px;
+  }
+  details > div pre { font-size: 12.5px; }
+
+  /* FOOTER */
+  footer {
+    padding: 56px 0 48px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 13px;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .footer-row { display: flex; flex-direction: column; gap: 18px; }
+  @media (min-width: 720px) {
+    .footer-row { flex-direction: row; justify-content: space-between; align-items: center; }
+  }
+  .footer-line .prompt { color: var(--green); }
+  .footer-line .made { color: var(--ink); font-weight: 600; }
+  .footer-line .comment { color: var(--muted); }
+  .footer-links { display: flex; gap: 22px; }
+  .footer-links a { color: var(--muted); border: none; }
+  .footer-links a:hover { color: var(--green); }
+
+  /* ============================================================
+     CODE-STYLE ANIMATIONS
+     ============================================================ */
+
+  /* Pulse status dot — "system live" indicator (no blink) */
+  .file-tag::before {
+    animation: pulse-green 2.4s ease-out infinite;
+  }
+  @keyframes pulse-green {
+    0%   { box-shadow: 0 0 0 0 rgba(45, 143, 71, 0.55); }
+    70%  { box-shadow: 0 0 0 7px rgba(45, 143, 71, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(45, 143, 71, 0); }
+  }
+
+  /* Brand prompt subtle pulse */
+  .brand .prompt {
+    animation: prompt-flash 3.2s ease-in-out infinite;
+  }
+  @keyframes prompt-flash {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.55; }
+  }
+
+  /* Workflow card top-bar shimmer on hover */
+  .wf::before { transition: filter 0.3s ease; }
+  .wf:hover::before { filter: brightness(1.25) saturate(1.2); }
+
+  /* Compile-style indicator inside the code window header */
+  .photo-header .dots span:first-child,
+  .wf-header .dots span:first-child,
+  .pipeline-header .dots span:first-child {
+    animation: status-blink 3s ease-in-out infinite;
+  }
+  @keyframes status-blink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.45; }
+  }
+
+  /* Scroll-driven reveal (modern Chrome/Edge/Safari).
+     Falls back to visible-without-animation in older browsers. */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
+    .reveal-stagger > * {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+  }
+  @keyframes reveal-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Subtle code-block hover */
+  pre, .pipeline, .author .photo-wrap, .technical-names {
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  pre:hover, .pipeline:hover, .technical-names:hover {
+    border-color: var(--green);
+    box-shadow: 0 0 0 1px var(--green-soft);
+  }
+
+  /* Step number subtle hover lift */
+  .step::before { transition: transform 0.18s ease; }
+  .step:hover::before { transform: translateY(-2px) scale(1.04); }
+
+  /* Workflow command text shift on hover */
+  .wf .cmd { transition: transform 0.18s ease; }
+  .wf:hover .cmd { transform: translateX(4px); }
+
+  /* Respect users who prefer no motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+
+  /* ============================================================
+     RESPONSIVE POLISH — breakpoint pass
+     ============================================================ */
+
+  /* Very small phones (320 to 380px): tighten paddings, prevent overflow */
+  @media (max-width: 380px) {
+    .page { padding: 0 18px; }
+    .nav-inner { padding: 12px 18px; gap: 10px; }
+    .nav-cta { padding: 8px 12px; font-size: 10.5px; }
+    .brand { font-size: 11.5px; }
+    section { padding: 64px 0; }
+    .hero { padding: 48px 0 64px; }
+    .hero-subtitle { font-size: 16px; }
+    h1 { font-size: 48px; line-height: 0.92; }
+    h2 { font-size: 34px; }
+    .file-tag { font-size: 11px; flex-wrap: wrap; }
+    .wf-body { padding: 18px 18px 20px; }
+    .wf .cmd { font-size: 24px; }
+    .hs { padding: 18px 16px; }
+    .hs .v { font-size: 26px; }
+    .watcher { padding: 24px 20px 22px; }
+    pre { padding: 14px 14px; font-size: 12px; }
+    .author .photo .photo[style] { padding: 18px 16px !important; font-size: 11.5px !important; }
+    details summary { padding: 16px 18px; font-size: 14px; }
+    details > div { padding: 0 18px 18px 46px; font-size: 13.5px; }
+  }
+
+  /* Phone landscape and small tablets keep hero stacked with reasonable spacing */
+  @media (min-width: 600px) and (max-width: 919px) {
+    .hero { padding: 64px 0 80px; }
+    .hero-grid { gap: 48px; }
+    .author .photo-wrap { max-width: 100%; }
+  }
+
+  /* Avoid text overflow anywhere */
+  h1, h2, .hero-subtitle { word-break: break-word; overflow-wrap: anywhere; }
+  code, pre { word-break: break-word; }
+  pre code { word-break: break-all; white-space: pre-wrap; }
+
+  /* Improve focus states for keyboard users */
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="brand">
+      <span class="prompt">$</span><span class="path">100m-business-os</span><span class="ext">.md</span>
+    </div>
+    <div class="nav-links">
+      <a href="#install"><span class="tk-c">//</span> install</a>
+      <a href="#workflows"><span class="tk-c">//</span> workflows</a>
+      <a href="#how"><span class="tk-c">//</span> how</a>
+      <a href="#faq"><span class="tk-c">//</span> faq</a>
+    </div>
+    <a href="#install" class="nav-cta">./start</a>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+
+    <div>
+      <div class="file-tag">
+        <span class="tk-c">//</span> operator_manual.md &nbsp;<span class="tk-c">·</span>&nbsp; <span class="tk-k">version</span> <span class="tk-s">"0.7"</span> &nbsp;<span class="tk-c">·</span>&nbsp; <span class="tk-s">"2026-05-24"</span>
+      </div>
+
+      <h1>
+        <span class="row">$100M</span>
+        <span class="row green">Business OS</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Three books. <span class="em">Every video.</span> One folder.
+      </p>
+
+      <p class="lede">
+        A folder that becomes a <span class="hl">$100M-trained business strategist</span> on your machine.
+        Source corpus is the
+        <span class="hl">three core $100M books</span> plus
+        <span class="hl">2,275 source videos</span>.
+        Drop the folder, answer eight questions, get grounded business advice with real citations.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="#install" class="btn btn-green">./install →</a>
+        <a href="#how" class="btn btn-ghost">cat how-it-works.md</a>
+      </div>
+    </div>
+
+    <!-- CORPUS MANIFEST — replaces author card on the lean edition -->
+    <div class="author">
+      <div class="photo-wrap">
+        <div class="photo-header">
+          <span class="dots"><span></span><span></span><span></span></span>
+          <span class="filename">corpus.manifest</span>
+        </div>
+        <div class="photo" style="aspect-ratio: auto; padding: 24px 22px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.85; background: var(--surface); text-align: left;">
+          <div><span class="tk-c"># sources</span></div>
+          <div style="height: 4px;"></div>
+          <div><span class="tk-k">books:</span></div>
+          <div style="padding-left: 16px;"><span class="tk-c">-</span> <span class="tk-s">"$100M Offers"</span></div>
+          <div style="padding-left: 16px;"><span class="tk-c">-</span> <span class="tk-s">"$100M Leads"</span></div>
+          <div style="padding-left: 16px;"><span class="tk-c">-</span> <span class="tk-s">"$100M Money Models"</span></div>
+          <div style="height: 6px;"></div>
+          <div><span class="tk-k">videos:</span> <span class="tk-n">173</span> <span class="tk-c"># long-form</span></div>
+          <div><span class="tk-k">shorts:</span> <span class="tk-n">2102</span></div>
+          <div style="height: 6px;"></div>
+          <div><span class="tk-k">total_chunks:</span> <span class="tk-n">8923</span></div>
+          <div><span class="tk-k">dimensions:</span> <span class="tk-n">384</span></div>
+          <div><span class="tk-k">index_size:</span> <span class="tk-s">"~12 MB"</span></div>
+          <div><span class="tk-k">model:</span> <span class="tk-s">"BAAI/bge-small-en-v1.5"</span></div>
+        </div>
+        <div class="caption">
+          <div><span class="field">includes:</span> <span class="value">books + transcripts</span></div>
+          <div><span class="field">size:</span> <span class="value">~12 MB on disk</span></div>
+          <div><span class="field">stays:</span> <span class="value green">on your machine</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="hero-stats reveal-stagger">
+    <div class="hs green">
+      <div class="v">3</div>
+      <div class="k">core books</div>
+    </div>
+    <div class="hs blue">
+      <div class="v">2,275</div>
+      <div class="k">videos · shorts</div>
+    </div>
+    <div class="hs purple">
+      <div class="v">8,923</div>
+      <div class="k">chunks indexed</div>
+    </div>
+    <div class="hs amber">
+      <div class="v">200ms</div>
+      <div class="k">per query · offline</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section>
+  <div class="sec-eyebrow"><span class="sym">#</span> <span class="name">01_about</span></div>
+  <h2>Not a chatbot. <span class="green">A folder.</span></h2>
+  <p class="sec-lede">Open the folder in Claude Code. You have a senior business strategist on your screen. It knows your business because you told it once. It knows the $100M methodology cold because it queries a vector index over the full corpus at the moment you ask.</p>
+
+  <div class="about-grid">
+    <div>
+      <ul>
+        <li><b>Knows your business</b> — written once in <code>/onboard</code></li>
+        <li><b>Knows the $100M methodology cold</b> — vector-indexed locally</li>
+        <li><b>Audits your business</b> across 15 dimensions on demand</li>
+        <li><b>Writes a 30-day action plan</b> from the audit</li>
+        <li><b>Checks in on the plan</b> week by week</li>
+        <li><b>Answers any business question</b> with a real playbook citation</li>
+      </ul>
+      <p style="color: var(--muted); font-size: 15px;">Your data lives in <code>profile.yaml</code> on your disk. Audits and plans are dated markdown files. The Hormozi brain is a 13&nbsp;MB index file. Nothing leaves your machine through this system.</p>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipeline-header">
+        <span class="dots"><span></span><span></span><span></span></span>
+        <span>retrieval.pipeline</span>
+      </div>
+      <div class="pipeline-body">
+        <div class="stage you">
+          <span class="role">you</span>
+          Should I raise my prices?
+        </div>
+        <div class="arrow">▼</div>
+        <div class="stage s">
+          <span class="role">strategist (claude)</span>
+          Reads your profile.yaml
+        </div>
+        <div class="arrow">▼</div>
+        <div class="stage brain">
+          <span class="role">local vector brain</span>
+          Pulls top-5 chunks from $100M corpus
+        </div>
+        <div class="arrow">▼</div>
+        <div class="stage out">
+          <span class="role">answer</span>
+          Yes. Raise to R8k. Pricing Playbook says...
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<section id="install">
+  <div class="sec-eyebrow"><span class="sym">#</span> <span class="name">02_install</span></div>
+  <h2>Install in <span class="green">5 steps</span></h2>
+  <p class="sec-lede">~5 minutes if you have Claude Code. Add 5 more if you do not.</p>
+
+  <div class="steps reveal-stagger">
+    <div class="step">
+      <h3>Install Claude Code</h3>
+      <p>If you do not have it, get it from <a href="https://docs.claude.com/claude-code" target="_blank" rel="noopener">docs.claude.com/claude-code</a>. Mac, Windows, or Linux all work.</p>
+    </div>
+    <div class="step">
+      <h3>Get the folder</h3>
+      <p>You should have it from whoever sent you the link. The folder is called <code>hormozi-business-os</code>. Put it anywhere on your machine.</p>
+    </div>
+    <div class="step">
+      <h3>Install Python dependencies</h3>
+<pre class="terminal"><code>pip3 install fastembed pymupdf numpy youtube-transcript-api</code></pre>
+      <p>Total install is ~100&nbsp;MB. The biggest piece is the embedding model, which downloads once and caches in <code>~/.cache/huggingface/</code>.</p>
+    </div>
+    <div class="step">
+      <h3>Open the folder in Claude Code</h3>
+<pre class="terminal"><code>cd /path/to/hormozi-business-os
+claude</code></pre>
+    </div>
+    <div class="step">
+      <h3>Type <code>/onboard</code> and answer the questions</h3>
+      <p>Eight stages. ~15 minutes. Covers identity, offer, customer, pricing, reach, sales process, operations, and goals. Writes <code>profile.yaml</code> at the end and asks if you want the daily watcher.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WORKFLOWS -->
+<section id="workflows">
+  <div class="sec-eyebrow"><span class="sym">#</span> <span class="name">03_workflows</span></div>
+  <h2>Six <span class="green">workflows</span></h2>
+  <p class="sec-lede">Type the slash command. Or describe what you want in plain English. The strategist routes.</p>
+
+  <div class="wf-grid reveal-stagger">
+
+    <div class="wf purple">
+      <div class="wf-header">
+        <span class="dots"><span></span><span></span><span></span></span>
+        <span>onboard.sh</span>
+      </div>
+      <div class="wf-body">
+        <div class="cmd">/onboard</div>
+        <div class="when">first-time only</div>
+        <div class="desc">Eight-stage intake. Writes <code>profile.yaml</code> + <code>profile.md</code>. Offers to install the daily watcher at the end.</div>
+        <div class="ex">/onboard</div>
+      </div>
+    </div>
+
+    <div class="wf blue">
+      <div class="wf-header">
+        <span class="dots"><span></span><span></span><span></span></span>
+        <span>audit.sh</span>
+      </div>
+      <div class="wf-body">
+        <div class="cmd">/audit</div>
+        <div class="when">quarterly · ~2 min</div>
+        <div class="desc">Scores your business across 15 dimensions from 0 (broken) to 4 (great). Every score cites your profile and a Hormozi playbook. Compares to your last audit.</div>
+        <div class="ex">/audit</div>
+      </div>
+    </div>
+
+    <div class="wf green">
+      <div class="wf-header">
+        <span class="dots"><span></span><span></span><span></span></span>
+        <span>plan.sh</span>
+      </div>
+      <div class="wf-body">
+        <div class="cmd">/plan</div>
+        <div class="when">after every audit</div>
+        <div class="desc">Picks your 5 highest-leverage fixes using Impact × Cheapness × Urgency. Sequences across 4 weeks. Week 1 is your cheapest fastest wins.</div>
+        <div class="ex">/plan</div>
+      </div>
+    </div>
+
+    <div class="wf amber">
+      <div class="wf-header">
+        <span class="dots"><span></span><span></span><span></span></span>
+        <span>checkin.sh</span>
+      </div>
+      <div class="wf-body">
+        <div class="cmd">/checkin</div>
+        <div class="when">weekly</div>
+        <div class="desc">Walks your current plan. Marks actions done. Surfaces what is stuck. Decides whether you are on pace, have an execution problem, or need a new plan.</div>
+        <div class="ex">/checkin</div>
+      </div>
+    </div>
+
+    <div class="wf purple">
+      <div class="wf-header">
+        <span class="dots"><span></span><span></span><span></span></span>
+        <span>advise.sh</span>
+      </div>
+      <div class="wf-body">
+        <div class="cmd">/advise</div>
+        <div class="when">anytime</div>
+        <div class="desc">Default for any business question. Auto-detects when something you say changes your profile and offers to update it before answering.</div>
+        <div class="ex">should I raise prices on existing customers?</div>
+      </div>
+    </div>
+
+    <div class="wf blue">
+      <div class="wf-header">
+        <span class="dots"><span></span><span></span><span></span></span>
+        <span>update.sh</span>
+      </div>
+      <div class="wf-body">
+        <div class="cmd">/update</div>
+        <div class="when">when something changes</div>
+        <div class="desc">Patches your profile. New price, new hire, new offer, new revenue stage. Confirms the diff before writing. Appends to changelog.</div>
+        <div class="ex">/update my new price is R20,000</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- WATCHER -->
+<section id="watcher">
+  <div class="sec-eyebrow"><span class="sym">#</span> <span class="name">04_daemon</span></div>
+  <h2>The daily <span class="green">watcher</span></h2>
+  <p class="sec-lede">Optional. Off by default. Turn it on if you want your brain to grow itself.</p>
+
+  <div class="watcher">
+    <span class="badge">opt-in</span>
+    <h3>Auto-add new source videos every morning</h3>
+    <p>Every morning at 08:00, your machine checks the source YouTube channel. For each new video since the last run, it fetches the transcript, chunks it, embeds it, and appends to your local index. Pure client-side. No API keys.</p>
+    <p>Enable from your terminal (one-time):</p>
+<pre><span class="pre-comment"># macOS only (uses launchd)</span>
+brew install yt-dlp
+python3 brain/watcher.py install</pre>
+    <p>Check on it anytime:</p>
+<pre>python3 brain/watcher.py status     <span class="pre-comment"># last run, videos seen</span>
+python3 brain/watcher.py run        <span class="pre-comment"># run it right now</span>
+python3 brain/watcher.py uninstall  <span class="pre-comment"># remove the schedule</span></pre>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="sec-eyebrow"><span class="sym">#</span> <span class="name">05_internals</span></div>
+  <h2>How retrieval <span class="green">actually works</span></h2>
+  <p class="sec-lede">Plain English. No PhD required.</p>
+
+  <div class="how-text">
+    <p>Think of every paragraph in the $100M corpus as a tiny note card. You have about 8,900 of them sitting in your folder.</p>
+    <p>Each card has a <strong>numerical fingerprint</strong>: a list of 384 numbers that capture what the card is <em>about</em>, not the literal words but the meaning. Two cards about pricing have similar fingerprints. A card about pricing and a card about retention have very different fingerprints.</p>
+    <p>When you ask a question, the strategist converts your question into the same kind of fingerprint. Then it does one simple distance calculation: <strong>which 5 cards have fingerprints closest to your question's fingerprint?</strong></p>
+    <p>Those 5 cards get pulled out and handed to the strategist as context. It reads them, synthesizes an answer, and cites the source playbook by name. That is the whole trick.</p>
+    <p>The fingerprint generator is a small open-source model that lives on your machine (~80&nbsp;MB). The card fingerprints sit in a 13&nbsp;MB file. The distance calculation is one matrix multiplication. The whole thing runs in 200 milliseconds with no internet.</p>
+
+    <div class="technical-names">
+      <span class="tk-c">// technical names you do not need to know to use this:</span><br>
+      <span class="tk-c">//</span>&nbsp;&nbsp;<span class="tk-k">fingerprints</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&rarr; <span class="tk-s">"embeddings"</span><br>
+      <span class="tk-c">//</span>&nbsp;&nbsp;<span class="tk-k">distance calculation</span> &rarr; <span class="tk-s">"cosine similarity"</span><br>
+      <span class="tk-c">//</span>&nbsp;&nbsp;<span class="tk-k">the whole pattern</span>&nbsp;&nbsp;&nbsp;&nbsp;&rarr; <span class="tk-s">"retrieval-augmented generation"</span>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="sec-eyebrow"><span class="sym">#</span> <span class="name">06_faq</span></div>
+  <h2>Frequently <span class="green">asked</span></h2>
+  <p class="sec-lede">The questions I get asked.</p>
+
+  <details>
+    <summary>Does my data leave my machine?</summary>
+    <div>
+      <p>No. Your <code>profile.yaml</code>, audits, plans, and conversation logs all stay on your disk. The strategist reasons locally. The brain is a local file. The embedding model runs on your CPU.</p>
+      <p>The only thing that touches the network is Claude Code itself, which routes prompts and responses through Anthropic's servers (because Claude is hosted). Same as any Claude Code session you already use.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What does it cost?</summary>
+    <div>
+      <p>The folder is free. Dependencies are free. The source corpus is publicly available. The only ongoing cost is your Claude Code usage, which you already pay for.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What if I do not have Python?</summary>
+    <div>
+      <p>Most Macs and Linux machines have Python 3 already. Run <code>python3 --version</code> in your terminal. If you get version 3.9 or higher, you are good. If not, install from <a href="https://www.python.org" target="_blank" rel="noopener">python.org</a>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Will it work without internet?</summary>
+    <div>
+      <p>Retrieval works offline once the model is cached and the index is built. The strategist itself (Claude) needs internet because Claude is hosted by Anthropic. So: brain queries are local, the conversation goes through Anthropic.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>How do I add my own content to the brain?</summary>
+    <div>
+      <p>Drop PDFs or markdown files into a directory, then run:</p>
+<pre>python3 brain/ingest.py --source /path/to/your/dir</pre>
+      <p>The script accepts markdown (preferred), PDF, and YouTube-transcript text files. It chunks, embeds, and rebuilds the index. Re-run anytime to add or refresh material.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Can I share this with my business partner?</summary>
+    <div>
+      <p>Yes, with limits. The LICENSE in the folder says personal-use, not redistribution. If your partner works on the same business with you, you can both use the same folder. For a different friend with a different business, get them their own copy and let them onboard fresh.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What if the strategist is wrong?</summary>
+    <div>
+      <p>Tell it. Truth hierarchy: what you just said &gt; <code>profile.yaml</code> &gt; audit findings &gt; $100M frameworks. If a framework says one thing and your numbers say another, your numbers win and the strategist surfaces the conflict.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>How fresh is the corpus?</summary>
+    <div>
+      <p>The shipped index covers the three core books and source video content up to early 2026. Turn on the daily watcher and new videos get appended automatically every morning.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Why no playbooks?</summary>
+    <div>
+      <p>This edition ships the three core $100M books plus the full video archive. The other repo (<code>hormozi-business-os</code>) ships all 22 books + supplementary playbooks. This one is for operators who want the original material in its original shape, or who want to integrate a clean, well-bounded corpus into a different system (a different RAG pipeline, a knowledge graph, fine-tuning).</p>
+    </div>
+  </details>
+</section>
+
+<footer>
+  <div class="footer-row">
+    <div class="footer-line">
+      <span class="prompt">$</span> echo <span style="color: var(--c-string)">"made by"</span> &amp;&amp; <span class="made">Chad</span>
+      <span class="comment">&nbsp;// $100m-business-os · v0.7</span>
+    </div>
+    <div class="footer-links">
+      <a href="#install">install</a>
+      <a href="#workflows">workflows</a>
+      <a href="#how">how</a>
+      <a href="#faq">faq</a>
+    </div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>
