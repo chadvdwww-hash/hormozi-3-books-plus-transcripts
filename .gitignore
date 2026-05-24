@@ -5,10 +5,6 @@ audit/
 plan/
 conversations/
 
-# Watcher state and logs
-brain/.watcher-state.json
-brain/.watcher.log
-
 # Python and OS
 __pycache__/
 *.pyc

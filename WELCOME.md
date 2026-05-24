@@ -12,7 +12,7 @@ From your terminal, in this folder:
 ./setup.sh
 ```
 
-`setup.sh` checks your Python version, installs four Python packages (~100 MB total), verifies the brain index loads, and runs a real retrieval. If anything is missing, it tells you the exact fix. Takes about 90 seconds.
+`setup.sh` checks your Python version, installs three Python packages (~100 MB total), verifies the brain index loads, and runs a real retrieval. If anything is missing, it tells you the exact fix. Takes about 90 seconds.
 
 If `./setup.sh` says "Permission denied," run `chmod +x setup.sh` first.
 
@@ -57,8 +57,7 @@ After onboarding, you can type a slash command or describe what you want in plai
 │   ├── index.npz             pre-built vector index (the corpus)
 │   ├── chunks.jsonl          source text for each indexed chunk
 │   ├── ingest.py             rebuild the index from source files
-│   ├── query.py              semantic retrieval (cosine + MMR)
-│   └── watcher.py            optional daily YouTube watcher
+│   └── query.py              semantic retrieval (cosine + MMR)
 └── .claude/skills/           the seven workflows
 ```
 

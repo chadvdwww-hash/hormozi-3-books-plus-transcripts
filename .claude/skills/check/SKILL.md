@@ -21,11 +21,11 @@ Run these in order, via Bash where appropriate. Print each result as you go (rea
 
 ```bash
 python3 --version
-python3 -c "import fastembed, fitz, numpy, youtube_transcript_api; print('packages ok')" 2>&1
+python3 -c "import fastembed, fitz, numpy; print('packages ok')" 2>&1
 ```
 
 Expected: Python 3.9 or higher; `packages ok` printed.
-On failure: `./setup.sh` (or `pip3 install fastembed pymupdf numpy youtube-transcript-api` if no setup.sh).
+On failure: `./setup.sh` (or `pip3 install fastembed pymupdf numpy` if no setup.sh).
 
 ### 2. Brain index integrity
 
@@ -79,16 +79,6 @@ python3 brain/query.py "should I raise prices" --top-k 2 --format text 2>&1 | he
 Expected: 2 chunks returned with score and source name.
 On failure: same as check 3.
 
-### 7. Watcher status (optional)
-
-If watcher state file exists, report it:
-
-```bash
-python3 brain/watcher.py status 2>&1
-```
-
-Don't fail the diagnostic on this: it's optional. Just report if installed or not.
-
 ## Output shape
 
 After every check, print a one-line status. At the end, summarize:
@@ -98,12 +88,11 @@ After every check, print a one-line status. At the end, summarize:
   System check
 ═══════════════════════════════════════
   [✓] Python 3.11.4
-  [✓] Packages: fastembed, pymupdf, numpy, youtube-transcript-api
+  [✓] Packages: fastembed, pymupdf, numpy
   [✓] Brain: 9,558 chunks × 384-dim
   [✗] profile.yaml missing: run /onboard
   [✓] Skills: 7 workflows registered
   [✓] Retrieval test: top score 0.81 (Pricing Playbook)
-  [ ] Watcher: not installed (optional)
 
   Status: 1 issue: run /onboard to fix.
 ```

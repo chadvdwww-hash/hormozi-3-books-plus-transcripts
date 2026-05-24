@@ -275,25 +275,6 @@ Country: {country} ({currency})
 
 After writing the file, append one line to `conversations/{YYYY-MM-DD}.md` (create the file if it does not exist): `- Onboarded {founder_name}. Profile written.`
 
-## Stage 9: Offer the daily watcher
-
-Ask the operator, verbatim:
-
-> One last setup question, {founder_name}. This system can check the source YouTube channel every morning and automatically add new videos to your knowledge base. Pure client-side, no API keys, runs at 08:00. Want me to enable it?
-
-If they say **yes**:
-
-1. Run via Bash:
-   ```bash
-   python3 brain/watcher.py install
-   ```
-2. If the install succeeds, tell them: "Watcher installed. Runs daily at 08:00. Type `python3 brain/watcher.py status` anytime."
-3. If the install fails (likely on non-macOS), tell them: "Watcher install failed: {error}. macOS only currently. You can still run it manually with `python3 brain/watcher.py run` whenever you want fresh content."
-
-If they say **no** or **maybe later**:
-
-Tell them: "Fine. Run `python3 brain/watcher.py install` later if you change your mind."
-
 ## The closing line (bold)
 
 End the entire flow with this exact framing, personalized:

@@ -36,7 +36,7 @@ Then wait for input. Do not narrate further. Do not list every workflow up front
 
 The operator triggers these by typing the slash command or asking for it in plain English. Skills live in `.claude/skills/`.
 
-- **`/onboard`**: Walk the operator through the business intake. Write `profile.yaml` (canonical) and `profile.md` (readable view). Offers to install the optional daily watcher at the end.
+- **`/onboard`**: Walk the operator through the business intake. Write `profile.yaml` (canonical) and `profile.md` (readable view).
 - **`/audit`**: Run the 15-dimension business diagnostic defined in `brain/_audit-dimensions.md`. Write a dated snapshot `audit/findings-YYYY-MM-DD.md` plus update the latest pointer `audit/findings.md`. Leads with movement vs the prior audit.
 - **`/plan`**: Generate a prioritized 30-day action plan using the algorithm in `brain/_plan-algorithm.md`. Write dated snapshot `plan/actions-YYYY-MM-DD.md` plus update latest pointer `plan/actions.md`.
 - **`/checkin`**: Walk the latest plan, mark actions done/in-progress/stuck/changed, dig into stuck items, decide whether the operator is on pace, has an execution problem, or needs to re-plan.
@@ -67,7 +67,7 @@ Two meta-brain files sit alongside, loaded only for the named workflow:
 - `brain/_audit-dimensions.md`: the 15-dimension rubric, with the retrieval focus for each dimension. Load at the start of `/audit`.
 - `brain/_plan-algorithm.md`: the prioritization algorithm. Load at the start of `/plan`.
 
-If `brain/query.py` errors with "Index not built," the friend has not run setup yet. Tell them to run: `pip3 install fastembed pymupdf numpy youtube-transcript-api && python3 brain/ingest.py --source /path/to/hormozi-md-files`
+If `brain/query.py` errors with "Index not built," the friend has not run setup yet. Tell them to run: `pip3 install fastembed pymupdf numpy && python3 brain/ingest.py --source /path/to/hormozi-md-files`
 
 The corpus includes books, playbooks, and YouTube transcripts. When a retrieved chunk has `kind: "transcript"`, cite it as "from a Hormozi YouTube video" rather than a playbook. When `kind: "markdown"`, cite it by the source name (e.g. "$100M Pricing Playbook"). Cross-reference: a transcript chunk plus a playbook chunk on the same topic is stronger evidence than either alone.
 

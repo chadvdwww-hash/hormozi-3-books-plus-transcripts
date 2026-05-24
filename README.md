@@ -22,7 +22,7 @@ cd hormozi-3-books-plus-transcripts
 ./setup.sh
 ```
 
-`setup.sh` checks your Python version, installs four Python packages (~100 MB total), verifies the brain index loads, and runs a smoke test. It tells you the exact fix if anything trips. Takes about 90 seconds.
+`setup.sh` checks your Python version, installs three Python packages (~100 MB total), verifies the brain index loads, and runs a smoke test. It tells you the exact fix if anything trips. Takes about 90 seconds.
 
 When `setup.sh` finishes, open the folder in Claude Code:
 
@@ -68,8 +68,6 @@ A local vector index over:
 
 Total: 8,923 chunks, 13 MB on disk. The strategist queries this index semantically every time it needs reasoning. Every answer cites the source by name.
 
-If you enable the optional daily watcher (see below), the corpus grows automatically.
-
 ---
 
 ## How it actually works
@@ -90,29 +88,6 @@ When you ask anything, the strategist turns your question into the same kind of 
 
 ---
 
-## Optional: the daily watcher
-
-The folder includes `brain/watcher.py`. When enabled, it scans the source YouTube channel every morning at 08:00, fetches transcripts for any new videos, embeds them, and appends to your local index. Pure client-side. No API keys.
-
-Currently macOS only (uses `launchd`). To enable:
-
-```bash
-brew install yt-dlp
-python3 brain/watcher.py install
-```
-
-Other commands:
-
-```bash
-python3 brain/watcher.py status      # last run, videos seen
-python3 brain/watcher.py run         # run it now
-python3 brain/watcher.py uninstall   # remove the schedule
-```
-
-Linux/Windows users can run `python3 brain/watcher.py run` manually or wire it into `cron` / Task Scheduler.
-
----
-
 ## Troubleshooting
 
 **`./setup.sh: Permission denied`**
@@ -122,7 +97,7 @@ Run `chmod +x setup.sh` then try again.
 Install Python 3.9+ from https://www.python.org/downloads/. On macOS you can also run `brew install python3`.
 
 **`command not found: pip3`**
-Use `python3 -m pip install fastembed pymupdf numpy youtube-transcript-api` instead, then re-run `./setup.sh`.
+Use `python3 -m pip install fastembed pymupdf numpy` instead, then re-run `./setup.sh`.
 
 **`command not found: claude`**
 Install Claude Code from https://docs.claude.com/claude-code. Once installed, run `claude` from inside this folder.
@@ -155,7 +130,6 @@ Open an issue on the repo or type `/check` inside Claude Code.
 │   ├── chunks.jsonl          source text per chunk
 │   ├── ingest.py             rebuild the index from source
 │   ├── query.py              semantic retrieval (cosine + MMR)
-│   ├── watcher.py            optional daily YouTube watcher
 │   ├── _audit-dimensions.md  15-dimension rubric
 │   └── _plan-algorithm.md    prioritization spec
 └── .claude/skills/           the seven workflows
@@ -169,7 +143,7 @@ This is your folder on your machine. Nothing is sent anywhere except your normal
 
 Your `profile.yaml`, audits, plans, and conversations stay local. If you want them shared (for example, with a co-founder), share the folder yourself.
 
-The embedding model runs on your CPU. The vector index is a local file. The watcher (if enabled) connects to YouTube directly with no third-party services.
+The embedding model runs on your CPU. The vector index is a local file.
 
 ---
 

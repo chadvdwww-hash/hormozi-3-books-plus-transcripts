@@ -41,7 +41,7 @@ step 1 "Detecting platform..."
 OS_NAME="$(uname -s 2>/dev/null || echo unknown)"
 case "$OS_NAME" in
   Darwin)  ok "macOS detected" ;;
-  Linux)   ok "Linux detected (watcher install will be manual; see README)" ;;
+  Linux)   ok "Linux detected" ;;
   MINGW*|MSYS*|CYGWIN*)
            warn "Windows detected. Setup may not work directly: use WSL or Git Bash."
            hint "Ubuntu via WSL is the smoothest path on Windows." ;;
@@ -87,16 +87,16 @@ fi
 # ────────────────────────────────────────────────
 # 4. Install Python packages
 # ────────────────────────────────────────────────
-step 4 "Installing four Python packages (~100 MB; first run may take a minute)..."
-if $PIP_CMD install --quiet --upgrade fastembed pymupdf numpy youtube-transcript-api 2>/dev/null; then
+step 4 "Installing three Python packages (~100 MB; first run may take a minute)..."
+if $PIP_CMD install --quiet --upgrade fastembed pymupdf numpy 2>/dev/null; then
   ok "Packages installed"
 else
   warn "System-wide install failed; retrying with --user scope"
-  if $PIP_CMD install --quiet --upgrade --user fastembed pymupdf numpy youtube-transcript-api 2>/dev/null; then
+  if $PIP_CMD install --quiet --upgrade --user fastembed pymupdf numpy 2>/dev/null; then
     ok "Packages installed (user scope)"
   else
     fail "Package install failed"
-    hint "Try: $PIP_CMD install fastembed pymupdf numpy youtube-transcript-api"
+    hint "Try: $PIP_CMD install fastembed pymupdf numpy"
     bigfail
   fi
 fi

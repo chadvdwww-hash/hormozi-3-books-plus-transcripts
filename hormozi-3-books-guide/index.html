@@ -532,39 +532,6 @@
   }
   .wf .ex::before { content: "$ "; color: var(--green); }
 
-  /* WATCHER: green-themed (Money Models) */
-  .watcher {
-    background:
-      linear-gradient(135deg, var(--green-soft), transparent 60%),
-      var(--surface);
-    border: 1px solid var(--rule);
-    border-left: 4px solid var(--green);
-    padding: 32px 32px 28px;
-  }
-  .watcher .badge {
-    display: inline-block;
-    background: var(--green);
-    color: #fff;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 10px;
-    padding: 4px 10px;
-    letter-spacing: 0.08em;
-    margin-bottom: 14px;
-    font-weight: 600;
-  }
-  .watcher h3 {
-    margin: 0 0 12px;
-    font-family: "Anton", sans-serif;
-    font-size: clamp(22px, 3vw, 30px);
-    font-weight: 400;
-    letter-spacing: -0.005em;
-    text-transform: uppercase;
-    color: var(--ink);
-  }
-  .watcher p { font-size: 15px; margin-bottom: 14px; color: var(--ink); }
-  .watcher pre { background: var(--surface-2); margin-bottom: 14px; border-color: var(--rule); }
-  .watcher pre:last-child { margin-bottom: 0; }
-
   /* HOW IT WORKS */
   .how-text { max-width: 64ch; }
   .how-text p { font-size: 16px; line-height: 1.7; }
@@ -947,8 +914,8 @@
     </div>
     <div class="step">
       <h3>Install Python dependencies</h3>
-<pre class="terminal"><code>pip3 install fastembed pymupdf numpy youtube-transcript-api</code></pre>
-      <p>Total install is ~100&nbsp;MB. The biggest piece is the embedding model, which downloads once and caches in <code>~/.cache/huggingface/</code>.</p>
+<pre class="terminal"><code>pip3 install fastembed pymupdf numpy</code></pre>
+      <p>Total install is ~100&nbsp;MB. The biggest piece is the embedding model, which downloads once on first query and caches in <code>~/.cache/huggingface/</code>.</p>
     </div>
     <div class="step">
       <h3>Open the folder in Claude Code</h3>
@@ -957,7 +924,7 @@ claude</code></pre>
     </div>
     <div class="step">
       <h3>Type <code>/onboard</code> and answer the questions</h3>
-      <p>Eight stages. ~15 minutes. Covers identity, offer, customer, pricing, reach, sales process, operations, and goals. Writes <code>profile.yaml</code> at the end and asks if you want the daily watcher.</p>
+      <p>Eight stages. ~15 minutes. Covers identity, offer, customer, pricing, reach, sales process, operations, and goals. Writes <code>profile.yaml</code> and <code>profile.md</code> at the end.</p>
     </div>
   </div>
 </section>
@@ -978,7 +945,7 @@ claude</code></pre>
       <div class="wf-body">
         <div class="cmd">/onboard</div>
         <div class="when">first-time only</div>
-        <div class="desc">Eight-stage intake. Writes <code>profile.yaml</code> + <code>profile.md</code>. Offers to install the daily watcher at the end.</div>
+        <div class="desc">Eight-stage intake. Writes <code>profile.yaml</code> + <code>profile.md</code>. Walks you through identity, offer, customer, pricing, sales, ops, and goals.</div>
         <div class="ex">/onboard</div>
       </div>
     </div>
@@ -1051,26 +1018,6 @@ claude</code></pre>
   </div>
 </section>
 
-<!-- WATCHER -->
-<section id="watcher">
-  <div class="sec-eyebrow"><span class="sym">#</span> <span class="name">04_daemon</span></div>
-  <h2>The daily <span class="green">watcher</span></h2>
-  <p class="sec-lede">Optional. Off by default. Turn it on if you want your brain to grow itself.</p>
-
-  <div class="watcher">
-    <span class="badge">opt-in</span>
-    <h3>Auto-add new source videos every morning</h3>
-    <p>Every morning at 08:00, your machine checks the source YouTube channel. For each new video since the last run, it fetches the transcript, chunks it, embeds it, and appends to your local index. Pure client-side. No API keys.</p>
-    <p>Enable from your terminal (one-time):</p>
-<pre><span class="pre-comment"># macOS only (uses launchd)</span>
-brew install yt-dlp
-python3 brain/watcher.py install</pre>
-    <p>Check on it anytime:</p>
-<pre>python3 brain/watcher.py status     <span class="pre-comment"># last run, videos seen</span>
-python3 brain/watcher.py run        <span class="pre-comment"># run it right now</span>
-python3 brain/watcher.py uninstall  <span class="pre-comment"># remove the schedule</span></pre>
-  </div>
-</section>
 
 <!-- HOW IT WORKS -->
 <section id="how">
@@ -1155,7 +1102,7 @@ python3 brain/watcher.py uninstall  <span class="pre-comment"># remove the sched
   <details>
     <summary>How fresh is the corpus?</summary>
     <div>
-      <p>The shipped index covers the three core books and source video content up to early 2026. Turn on the daily watcher and new videos get appended automatically every morning.</p>
+      <p>The shipped index covers the three core books and source video content up to early 2026.</p>
     </div>
   </details>
 
