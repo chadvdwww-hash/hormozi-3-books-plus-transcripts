@@ -19,18 +19,12 @@ Then, from a terminal:
 ```bash
 git clone https://github.com/chadvdwww-hash/hormozi-3-books-plus-transcripts.git
 cd hormozi-3-books-plus-transcripts
-./setup.sh
+./start.sh
 ```
 
-`setup.sh` checks your Python version, installs three Python packages (~100 MB total), verifies the brain index loads, and runs a smoke test. It tells you the exact fix if anything trips. Takes about 90 seconds.
+That's it. `start.sh` runs setup on the first run (installs dependencies, builds the keyword index, verifies the brain) and opens Claude Code. On every run after that, it just opens Claude Code. About 90 seconds the first time, instant after.
 
-When `setup.sh` finishes, open the folder in Claude Code:
-
-```bash
-claude
-```
-
-Then type:
+When Claude Code opens for the first time, type:
 
 ```
 /onboard
