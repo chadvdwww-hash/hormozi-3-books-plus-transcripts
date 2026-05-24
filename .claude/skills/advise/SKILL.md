@@ -42,12 +42,6 @@ If the question is a real advisory question, continue.
 
    Cite each chunk by source. For transcript chunks, prefer the `deep_link` field if present in the returned JSON — it lets the operator click through to the exact moment in the video.
 
-   When the question is broad, use batch mode to hit it from multiple angles:
-
-   ```bash
-   python3 brain/query.py --batch "speed to lead conversion impact" "follow-up sequence cadence" "warm vs cold lead handling" --top-k 4
-   ```
-
 4. Read the returned chunks. Spot the answer pattern. Note which playbook is most load-bearing.
 
 5. Apply to the operator's specific profile. Their numbers win against theory. If their unit economics contradict what the playbook says, point it out and follow their numbers.
