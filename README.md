@@ -1,83 +1,149 @@
 # $100M Business OS
 
-A strategic operating system for your business, grounded in the three core $100M books and the source YouTube corpus. Runs in Claude Code on your machine. Your business lives in files in this folder.
+A folder that becomes a senior business strategist on your machine. Grounded in the $100M methodology. Your business profile lives in this folder. The strategist's knowledge of the methodology lives in a local vector index. Nothing leaves your machine.
 
-## What this is
+> **Live site:** https://hormozi-3-books-guide.vercel.app
 
-A folder. Not an app. You open it in Claude Code and you have a senior business strategist on your screen. The strategist knows your business (once you tell it) and knows the $100M methodology cold (already indexed locally). You can:
+---
 
-- Get audited across 15 dimensions and scored 0 to 4 on each.
-- Get a prioritized 30-day action plan from the audit.
-- Walk that plan week by week with structured check-ins.
-- Ask any business question, anytime, and get a grounded answer with a real source citation.
+## 60-second install
 
-Your data never leaves your machine.
+You need three things on your machine first:
 
-## How it actually works (in depth)
+1. **Claude Code** — install from https://docs.claude.com/claude-code
+2. **Python 3.9 or higher** — most Macs and Linux already have it. Test: `python3 --version`
+3. **Git** — most machines already have it. Test: `git --version`
 
-The system is two things bolted together: a **structured operating framework** (workflows that capture your business and turn diagnostics into actions) and a **local retrieval-augmented strategist** (a small vector database over $100M material that the strategist consults at the moment you ask).
-
-**1. Ingestion (already done; ships pre-built).**
-Source documents (3 books in markdown plus 2,275 video and shorts transcripts) are split into ~400-word overlapping chunks. Each chunk is converted into a 384-dimensional numerical fingerprint by a small open-source embedding model (`BAAI/bge-small-en-v1.5`, runs locally on CPU). All fingerprints are stacked into `brain/index.npz`. The matching source text plus metadata is saved to `brain/chunks.jsonl`. The full index is about 13 MB on disk. This step happens once. The repo ships the pre-built index so you do not need source PDFs.
-
-**2. Onboarding (you do this once).**
-`/onboard` walks you through eight stages of intake (about 15 minutes): identity, offer, customer, pricing and money, reach and marketing, sales, operations, goals. The strategist writes your structured profile to `profile.yaml` (canonical) and a readable view to `profile.md`. Mid-stage micro-observations call out patterns as they show up so it does not feel like a form.
-
-**3. Retrieval-augmented advice (every session).**
-When you ask the strategist anything, it converts your question into a 384-dim fingerprint using the same model. It computes cosine similarity against all chunk fingerprints in `brain/index.npz` (one numpy matrix multiplication, ~200 ms on CPU). It pulls the top 5 most relevant chunks, re-ranks them for diversity (MMR), and synthesizes an answer grounded in those chunks plus your `profile.yaml`. Every answer cites the source by name. Nothing leaves your machine; the strategist's responses route through your normal Claude Code session.
-
-**4. The diagnostic loop.**
-`/audit` scores 15 dimensions of your business (4 Offer, 3 Leads, 3 Sales, 2 Money Model, 3 Retention and Growth). Each score cites a profile field and a source chunk. `/plan` filters dimensions scored 0 or 1, ranks them by Impact times Cheapness times Urgency, picks the top 5, and sequences them across four weeks. `/checkin` walks that plan, marks what is done, surfaces what is stuck, and decides whether you are on pace, have an execution problem, or need to re-plan. `/update` patches your profile when something changes. `/check` runs a system diagnostic.
-
-**5. Optional daily watcher.**
-The folder includes `brain/watcher.py`. When enabled, it scans the source YouTube channel every morning, fetches transcripts for any new videos, embeds them, and appends to your local index. Pure client-side. No API keys. macOS only currently (uses `launchd`).
-
-## What you need
-
-1. Claude Code installed: https://docs.claude.com/claude-code
-2. Python 3.9 or higher
-3. This folder
-4. About 15 minutes for onboarding the first time
-
-## Quick start (one command)
+Then, from a terminal:
 
 ```bash
+git clone https://github.com/chadvdwww-hash/hormozi-3-books-plus-transcripts.git
+cd hormozi-3-books-plus-transcripts
 ./setup.sh
 ```
 
-That checks your Python version, installs the four dependencies (`fastembed`, `pymupdf`, `numpy`, `youtube-transcript-api`), verifies the brain index loads, and runs a smoke test. If anything is wrong, it tells you the fix.
+`setup.sh` checks your Python version, installs four Python packages (~100 MB total), verifies the brain index loads, and runs a smoke test. It tells you the exact fix if anything trips. Takes about 90 seconds.
 
-Then open the folder in Claude Code:
+When `setup.sh` finishes, open the folder in Claude Code:
 
 ```bash
 claude
 ```
 
-And type `/onboard` to start. The strategist greets you and walks you through. If anything feels off later, type `/check` inside Claude Code for a diagnostic.
+Then type:
 
-## The seven workflows
+```
+/onboard
+```
 
-| Command | When | What it does |
+The strategist walks you through an 8-stage intake (~15 minutes), writes your business profile, and tells you the next move.
+
+---
+
+## What you get
+
+A strategist with seven workflows. Type the slash command or describe what you want in plain English:
+
+| Command | When to use | What it does |
 |---|---|---|
-| `/onboard` | First-time only | Captures your business in `profile.yaml`. |
-| `/audit` | Quarterly | Scores 15 dimensions, writes `audit/findings.md`. |
-| `/plan` | After every audit | Picks 5 fixes, sequences over 30 days, writes `plan/actions.md`. |
-| `/checkin` | Weekly | Walks the plan, marks done, surfaces stuck. |
-| `/advise` | Anytime | Default for any business question. |
-| `/update` | When something changes | Patches `profile.yaml`. |
-| `/check` | If something feels off | Runs a diagnostic. |
+| `/onboard` | First time | Captures your business in `profile.yaml` (~15 min) |
+| `/audit` | Quarterly | Scores your business across 15 dimensions, writes `audit/findings.md` |
+| `/plan` | After every audit | Picks your 5 highest-leverage fixes, sequences them across 30 days |
+| `/checkin` | Weekly | Walks the plan, marks what is done, surfaces what is stuck |
+| `/advise` | Anytime | Default for any business question. Auto-detects profile drift |
+| `/update` | When something changes | Patches `profile.yaml`. Confirms the diff before writing |
+| `/check` | If something feels off | Runs a system diagnostic |
 
 You can also just talk in plain English. "Should I raise my prices?" routes to `/advise`. "I just raised prices to $20k" routes to `/update`.
+
+---
+
+## What the brain contains
+
+A local vector index over:
+
+- **3 markdown books** — $100M Offers, $100M Leads, $100M Money Models
+- **173 long-form YouTube transcripts** (videos and streams, last 2+ years)
+- **2,102 YouTube Shorts transcripts**
+
+Total: 8,923 chunks, 13 MB on disk. The strategist queries this index semantically every time it needs reasoning. Every answer cites the source by name.
+
+If you enable the optional daily watcher (see below), the corpus grows automatically.
+
+---
+
+## How it actually works
+
+The system has two parts: a **structured operating framework** (the seven workflows that capture your business and turn diagnostics into action) and a **local retrieval-augmented strategist** (a small vector database the strategist consults at the moment you ask).
+
+**Ingestion** (already done; the index ships pre-built).
+The 3 books and 2,275 transcripts were split into ~400-word overlapping chunks. Each chunk was converted to a 384-dimensional numerical fingerprint by a small open-source embedding model (`BAAI/bge-small-en-v1.5`). All fingerprints stack into `brain/index.npz`. Source text plus metadata lives in `brain/chunks.jsonl`. You never need to do this yourself; the repo includes the pre-built index.
+
+**Onboarding** (you do this once).
+`/onboard` walks you through eight stages of intake: identity, offer, customer, pricing, reach, sales, operations, goals. The strategist writes your structured profile to `profile.yaml` plus a readable view to `profile.md`. Mid-stage micro-observations call out patterns as they show up.
+
+**Retrieval-augmented advice** (every session).
+When you ask anything, the strategist turns your question into the same kind of fingerprint, computes cosine similarity against all chunk fingerprints (one numpy matrix multiplication, ~200 ms on CPU), pulls the top 5, re-ranks for diversity (Maximal Marginal Relevance), and synthesizes an answer grounded in those chunks plus your profile. Every answer cites the source by name.
+
+**The diagnostic loop.**
+`/audit` scores 15 dimensions. `/plan` picks the top 5 fixes by Impact × Cheapness × Urgency and sequences them across 4 weeks. `/checkin` walks the plan and decides whether you are on pace, have an execution problem, or need to re-plan. `/update` patches your profile when something changes.
+
+---
+
+## Optional: the daily watcher
+
+The folder includes `brain/watcher.py`. When enabled, it scans the source YouTube channel every morning at 08:00, fetches transcripts for any new videos, embeds them, and appends to your local index. Pure client-side. No API keys.
+
+Currently macOS only (uses `launchd`). To enable:
+
+```bash
+brew install yt-dlp
+python3 brain/watcher.py install
+```
+
+Other commands:
+
+```bash
+python3 brain/watcher.py status      # last run, videos seen
+python3 brain/watcher.py run         # run it now
+python3 brain/watcher.py uninstall   # remove the schedule
+```
+
+Linux/Windows users can run `python3 brain/watcher.py run` manually or wire it into `cron` / Task Scheduler.
+
+---
+
+## Troubleshooting
+
+**`./setup.sh: Permission denied`**
+Run `chmod +x setup.sh` then try again.
+
+**`command not found: python3`**
+Install Python 3.9+ from https://www.python.org/downloads/. On macOS you can also run `brew install python3`.
+
+**`command not found: pip3`**
+Use `python3 -m pip install fastembed pymupdf numpy youtube-transcript-api` instead, then re-run `./setup.sh`.
+
+**`command not found: claude`**
+Install Claude Code from https://docs.claude.com/claude-code. Once installed, run `claude` from inside this folder.
+
+**The strategist does not respond, or seems lost**
+Inside Claude Code, type `/check`. It runs a 6-step diagnostic and tells you the one command that fixes the first failure.
+
+**Anything else**
+Open an issue on the repo or type `/check` inside Claude Code.
+
+---
 
 ## What is in the folder
 
 ```
 .
-├── CLAUDE.md                 strategist personality (loaded every session)
 ├── README.md                 this file
+├── WELCOME.md                first-read overview (~3 min read)
+├── CLAUDE.md                 strategist personality (loaded every session)
 ├── LICENSE.md                personal use, no redistribution
-├── WELCOME.md                first-read intro
-├── setup.sh                  one-command install
+├── setup.sh                  one-command install + verification
 ├── profile.yaml              YOUR business (created by /onboard)
 ├── profile.md                readable view of the same
 ├── audit/                    dated 15-dimension diagnostics
@@ -85,25 +151,17 @@ You can also just talk in plain English. "Should I raise my prices?" routes to `
 ├── conversations/            daily Q&A log
 ├── _qa/                      retrieval quality eval set
 ├── brain/
-│   ├── index.npz             pre-built vector index (the corpus)
+│   ├── index.npz             pre-built vector index
 │   ├── chunks.jsonl          source text per chunk
-│   ├── ingest.py             rebuild index from source
+│   ├── ingest.py             rebuild the index from source
 │   ├── query.py              semantic retrieval (cosine + MMR)
 │   ├── watcher.py            optional daily YouTube watcher
 │   ├── _audit-dimensions.md  15-dimension rubric
 │   └── _plan-algorithm.md    prioritization spec
-└── .claude/skills/           the workflows
+└── .claude/skills/           the seven workflows
 ```
 
-## What the brain contains
-
-A local vector index over:
-
-- **3 markdown books** ($100M Offers, $100M Leads, $100M Money Models)
-- **173 long-form YouTube transcripts** (videos and streams over the last 2+ years)
-- **2,102 YouTube Shorts transcripts**
-
-If the daily watcher is enabled, the corpus grows automatically as new videos appear.
+---
 
 ## Privacy
 
@@ -111,15 +169,23 @@ This is your folder on your machine. Nothing is sent anywhere except your normal
 
 Your `profile.yaml`, audits, plans, and conversations stay local. If you want them shared (for example, with a co-founder), share the folder yourself.
 
+The embedding model runs on your CPU. The vector index is a local file. The watcher (if enabled) connects to YouTube directly with no third-party services.
+
+---
+
 ## Voice
 
 The strategist speaks like a $100M-trained operator. Direct. Blunt. Action-first. If your business model is broken, it says so on sentence one. If you are pricing for free what should cost $20,000, it says so. This is the point.
 
 If you want softer feedback, use ChatGPT. This is for operators who want the truth.
 
+---
+
 ## License
 
 Personal use only. See `LICENSE.md`.
+
+---
 
 ## Questions
 
