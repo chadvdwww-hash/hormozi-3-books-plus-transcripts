@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="How the $100M Business OS finds the right paragraph from 9,558 chunks of Hormozi material in 200 milliseconds. Plain English, no PhD required." />
+<title>How the brain works · $100M Business OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafaf7;
+    --surface: #ffffff;
+    --surface-2: #f6f6f1;
+    --rule: #e5e5e0;
+    --rule-2: #d6d6cf;
+    --ink: #0a0a0a;
+    --muted: #6b7280;
+    --dim: #a3a3a3;
+    --green: #2d8f47;
+    --green-soft: rgba(45, 143, 71, 0.10);
+    --blue: #1b5eab;
+    --blue-soft: rgba(27, 94, 171, 0.10);
+    --purple: #6b1ec4;
+    --purple-soft: rgba(107, 30, 196, 0.10);
+    --amber: #d97706;
+    --amber-soft: rgba(217, 119, 6, 0.10);
+    --red: #c43d2f;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); scroll-behavior: smooth; }
+  body {
+    font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
+    font-size: 16px; line-height: 1.65;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--green); color: #fff; }
+  a { color: var(--blue); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
+  a:hover { border-bottom-color: currentColor; }
+  .mono { font-family: "JetBrains Mono", monospace; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(250,250,247,0.92);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-inner {
+    max-width: 880px; margin: 0 auto;
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px; font-weight: 600;
+    display: flex; align-items: baseline; gap: 4px;
+  }
+  .brand .prompt { color: var(--green); margin-right: 6px; }
+  .brand .ext { color: var(--muted); }
+  .nav-back {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px; color: var(--muted);
+    border: 1px solid var(--rule); padding: 6px 12px;
+    transition: all 0.15s;
+  }
+  .nav-back:hover { color: var(--green); border-color: var(--green); }
+
+  /* PAGE */
+  .page { max-width: 880px; margin: 0 auto; padding: 0 24px 96px; }
+
+  /* HERO */
+  .hero { padding: 80px 0 64px; border-bottom: 1px solid var(--rule); }
+  .file-tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px; color: var(--muted); margin-bottom: 24px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .file-tag::before {
+    content: ""; display: inline-block;
+    width: 7px; height: 7px; background: var(--green); border-radius: 50%;
+    animation: pulse 2.4s ease-out infinite;
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(45, 143, 71, 0.55); }
+    70%  { box-shadow: 0 0 0 7px rgba(45, 143, 71, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(45, 143, 71, 0); }
+  }
+  h1 {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-size: clamp(48px, 8vw, 96px);
+    line-height: 0.95;
+    margin: 0 0 24px;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  h1 .green { color: var(--green); }
+  .hero-lede {
+    color: var(--muted);
+    font-size: clamp(17px, 2vw, 21px);
+    line-height: 1.5;
+    max-width: 56ch;
+    margin: 0;
+  }
+  .hero-lede strong { color: var(--ink); font-weight: 600; }
+
+  /* SECTIONS */
+  section.step {
+    padding: 64px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  section.step:last-of-type { border-bottom: none; }
+  .step-num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .step-num .n { color: var(--green); font-weight: 700; }
+  h2 {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1;
+    margin: 0 0 20px;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  h2 .green { color: var(--green); }
+  h2 .blue { color: var(--blue); }
+  h2 .purple { color: var(--purple); }
+  h2 .amber { color: var(--amber); }
+  p { margin: 0 0 18px; line-height: 1.7; font-size: 17px; }
+  p.intro { font-size: 18px; color: var(--muted); margin-bottom: 28px; max-width: 60ch; }
+  p strong { color: var(--green); font-weight: 700; }
+  code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.86em;
+    background: var(--surface-2);
+    color: var(--ink);
+    padding: 2px 7px;
+    border: 1px solid var(--rule);
+  }
+
+  /* STAT CALLOUT */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 28px 0;
+  }
+  @media (min-width: 640px) {
+    .stats { grid-template-columns: repeat(4, 1fr); }
+  }
+  .stat {
+    background: var(--surface);
+    padding: 22px 20px;
+    position: relative;
+  }
+  .stat::before {
+    content: ""; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+  }
+  .stat.green::before { background: var(--green); }
+  .stat.blue::before { background: var(--blue); }
+  .stat.purple::before { background: var(--purple); }
+  .stat.amber::before { background: var(--amber); }
+  .stat .v {
+    font-family: "Anton", sans-serif;
+    font-size: 32px;
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .stat.green .v { color: var(--green); }
+  .stat.blue .v { color: var(--blue); }
+  .stat.purple .v { color: var(--purple); }
+  .stat.amber .v { color: var(--amber); }
+  .stat .k {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+
+  /* FINGERPRINT VISUAL */
+  .fingerprint {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 24px;
+    margin: 28px 0;
+  }
+  .fp-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .fp-row:last-child { border-bottom: none; }
+  @media (min-width: 720px) {
+    .fp-row { grid-template-columns: 1fr 30px 1fr; gap: 20px; }
+  }
+  .fp-text {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+    font-style: italic;
+    border-left: 3px solid var(--rule);
+    padding-left: 14px;
+  }
+  .fp-text.pricing { border-left-color: var(--green); }
+  .fp-text.retention { border-left-color: var(--amber); }
+  .fp-arrow {
+    text-align: center;
+    color: var(--muted);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 16px;
+  }
+  .fp-vec {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface-2);
+    padding: 10px 12px;
+    border: 1px solid var(--rule);
+    line-height: 1.5;
+    word-break: break-all;
+  }
+  .fp-vec .n-green { color: var(--green); font-weight: 600; }
+  .fp-vec .n-amber { color: var(--amber); font-weight: 600; }
+  .fp-vec .ellipsis { color: var(--dim); }
+
+  /* COMPARE: BAR */
+  .compare {
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    padding: 18px 22px;
+    margin: 20px 0;
+  }
+  .compare-row {
+    display: grid;
+    grid-template-columns: 130px 1fr 60px;
+    gap: 14px;
+    align-items: center;
+    padding: 8px 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+  }
+  .compare-row .label { color: var(--ink); }
+  .compare-row .bar {
+    height: 14px;
+    background: var(--rule);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .compare-row .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+  .compare-row.high .bar-fill { background: var(--green); }
+  .compare-row.med  .bar-fill { background: var(--blue); }
+  .compare-row.low  .bar-fill { background: var(--amber); }
+  .compare-row.veryloow .bar-fill { background: var(--dim); }
+  .compare-row .score { color: var(--muted); text-align: right; }
+  @media (max-width: 540px) {
+    .compare-row { grid-template-columns: 100px 1fr 48px; gap: 10px; font-size: 11px; }
+  }
+
+  /* PIPELINE */
+  .pipeline {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 20px;
+    margin: 28px 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .pipe-step {
+    background: var(--surface-2);
+    padding: 12px 14px;
+    margin: 6px 0;
+    border-left: 3px solid var(--rule);
+  }
+  .pipe-step.user { border-left-color: var(--blue); }
+  .pipe-step.proc { border-left-color: var(--purple); }
+  .pipe-step.brain { border-left-color: var(--green); background: var(--green-soft); }
+  .pipe-step.out { border-left-color: var(--amber); }
+  .pipe-step .role {
+    color: var(--muted); font-size: 10px;
+    letter-spacing: 0.06em;
+    display: block; margin-bottom: 4px;
+  }
+  .pipe-step .role::before { content: "// "; }
+  .pipe-arrow {
+    text-align: center; color: var(--dim);
+    font-size: 16px; margin: 2px 0;
+  }
+
+  /* SPACE PLOT (cosine similarity visual) */
+  .space-plot {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 28px;
+    margin: 28px 0;
+    text-align: center;
+  }
+  .space-plot svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+  .space-legend {
+    display: flex; flex-wrap: wrap; gap: 18px;
+    justify-content: center;
+    margin-top: 16px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .space-legend .item { display: inline-flex; align-items: center; gap: 6px; }
+  .space-legend .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* TOP-K RESULTS */
+  .topk {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    margin: 28px 0;
+  }
+  .topk-header {
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 18px;
+    background: var(--surface-2);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex; justify-content: space-between;
+  }
+  .topk-row {
+    display: grid;
+    grid-template-columns: 30px 1fr 60px;
+    gap: 14px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+    align-items: center;
+  }
+  .topk-row:last-child { border-bottom: none; }
+  .topk-row .rank {
+    font-family: "Anton", sans-serif;
+    color: var(--green); font-size: 22px;
+  }
+  .topk-row .text {
+    color: var(--ink);
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .topk-row .src {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+  }
+  .topk-row.diversity-out { opacity: 0.45; }
+  .topk-row.diversity-out .text { text-decoration: line-through; }
+  .topk-row.diversity-in .rank { color: var(--amber); }
+  .topk-note {
+    padding: 12px 18px;
+    border-top: 1px solid var(--rule);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface-2);
+  }
+
+  /* SIDE-BY-SIDE */
+  .side {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin: 24px 0;
+  }
+  @media (min-width: 720px) {
+    .side { grid-template-columns: 1fr 1fr; gap: 16px; }
+  }
+  .side-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 20px;
+  }
+  .side-card h3 {
+    margin: 0 0 10px;
+    font-family: "Anton", sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+  .side-card.dense h3 { color: var(--green); }
+  .side-card.bm25 h3 { color: var(--blue); }
+  .side-card p { font-size: 14.5px; margin: 0 0 10px; color: var(--ink); }
+  .side-card .ex {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11.5px;
+    background: var(--surface-2);
+    padding: 8px 12px;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    margin-top: 10px;
+  }
+  .side-card .ex strong { color: var(--ink); font-weight: 600; }
+
+  /* TECHNICAL NAMES (footnote) */
+  .tech-names {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 20px 24px;
+    margin-top: 28px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    line-height: 1.95;
+  }
+  .tech-names .c { color: var(--muted); }
+  .tech-names .k { color: var(--purple); font-weight: 500; }
+  .tech-names .s { color: var(--green); }
+  .tech-names .arrow { color: var(--dim); }
+
+  /* FOOTER */
+  footer {
+    padding: 48px 0 36px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 13px;
+    font-family: "JetBrains Mono", monospace;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  @media (min-width: 720px) {
+    footer { flex-direction: row; justify-content: space-between; align-items: center; }
+  }
+  footer .prompt { color: var(--green); }
+  footer a { color: var(--muted); border: none; }
+  footer a:hover { color: var(--green); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="brand">
+      <span class="prompt">$</span>how-it-works<span class="ext">.html</span>
+    </div>
+    <a href="/" class="nav-back">← back to main</a>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="file-tag">how_retrieval_works.md &nbsp;·&nbsp; 5 minute read</div>
+  <h1>How the brain finds the <span class="green">right paragraph</span></h1>
+  <p class="hero-lede">
+    You ask <strong>"should I raise my prices?"</strong> and the strategist answers with a specific source citation in under a second.
+    There are <strong>9,558 paragraphs</strong> of Hormozi material sitting on your machine. How does it find the right ones, every time?
+    Plain English, no PhD required.
+  </p>
+</section>
+
+<!-- STEP 1: THE PROBLEM -->
+<section class="step">
+  <div class="step-num"><span class="n">01</span> · the problem</div>
+  <h2>9,558 paragraphs. <span class="green">200 milliseconds.</span></h2>
+  <p class="intro">Everything Hormozi has published in 3 books and 2,275 videos lives on your laptop as text. When you ask the strategist a question, it needs to find the 5 most relevant paragraphs out of all of those, fast.</p>
+
+  <div class="stats">
+    <div class="stat green"><div class="v">3</div><div class="k">books</div></div>
+    <div class="stat blue"><div class="v">2,275</div><div class="k">videos · shorts</div></div>
+    <div class="stat purple"><div class="v">9,558</div><div class="k">paragraphs</div></div>
+    <div class="stat amber"><div class="v">200ms</div><div class="k">per query, offline</div></div>
+  </div>
+
+  <p>Keyword search is too dumb: it would miss "raise prices" when the source says "charge more." Reading all 9,558 paragraphs every time is too slow. We need something in the middle: <strong>fast and meaning-aware.</strong></p>
+</section>
+
+<!-- STEP 2: FINGERPRINTS -->
+<section class="step">
+  <div class="step-num"><span class="n">02</span> · the trick</div>
+  <h2>Every paragraph gets a <span class="green">fingerprint</span></h2>
+  <p class="intro">The trick is: every paragraph is converted into a numerical fingerprint. A list of 384 numbers. Paragraphs about similar things end up with similar fingerprints. The fingerprints capture the meaning, not the words.</p>
+
+  <div class="fingerprint">
+    <div class="fp-row">
+      <div class="fp-text pricing">"Raise prices on existing customers. Grandfather them for one cycle. Don't apologize, don't justify."</div>
+      <div class="fp-arrow">→</div>
+      <div class="fp-vec">
+        [ <span class="n-green">0.41, -0.22, 0.78, 0.13, -0.55,</span>
+        <span class="ellipsis">… 379 more numbers …</span>
+        <span class="n-green">0.91, -0.04</span> ]
+      </div>
+    </div>
+    <div class="fp-row">
+      <div class="fp-text pricing">"The fastest credible service in a market wins price. Charge heinous amounts."</div>
+      <div class="fp-arrow">→</div>
+      <div class="fp-vec">
+        [ <span class="n-green">0.38, -0.19, 0.81, 0.16, -0.51,</span>
+        <span class="ellipsis">… 379 more numbers …</span>
+        <span class="n-green">0.89, -0.07</span> ]
+      </div>
+    </div>
+    <div class="fp-row">
+      <div class="fp-text retention">"Onboarding is the highest-leverage retention activity. Deliver one visible win in week one."</div>
+      <div class="fp-arrow">→</div>
+      <div class="fp-vec">
+        [ <span class="n-amber">-0.62, 0.34, 0.05, -0.71, 0.42,</span>
+        <span class="ellipsis">… 379 more numbers …</span>
+        <span class="n-amber">-0.18, 0.66</span> ]
+      </div>
+    </div>
+  </div>
+
+  <p>Notice: the two <strong>pricing</strong> paragraphs (top two) have nearly identical numbers. The <span style="color: var(--amber); font-weight: 700;">retention</span> paragraph (bottom) has totally different numbers. The fingerprints know what each paragraph is <em>about</em>, even though the words are different.</p>
+</section>
+
+<!-- STEP 3: WHERE THE FINGERPRINTS COME FROM -->
+<section class="step">
+  <div class="step-num"><span class="n">03</span> · the model</div>
+  <h2>Where the fingerprints <span class="purple">come from</span></h2>
+  <p class="intro">A small open-source AI model lives on your machine. About 80 MB on disk. Its only job: take a piece of text in, give 384 numbers out. Same input always produces the same output.</p>
+
+  <div class="pipeline">
+    <div class="pipe-step user">
+      <span class="role">input</span>
+      Any piece of text (a paragraph, a sentence, a question)
+    </div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-step brain">
+      <span class="role">model: BGE-small-en-v1.5 (~80 MB on disk, runs on your CPU)</span>
+      Read the text, compute its 384-number fingerprint
+    </div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-step out">
+      <span class="role">output</span>
+      [ 384 numbers describing the meaning ]
+    </div>
+  </div>
+
+  <p>At setup time (one-time, ~20 minutes), this model processes all 9,558 paragraphs once. The 9,558 fingerprints get stacked into a single 13 MB file: <code>brain/index.npz</code>. That's the brain.</p>
+  <p>After setup, the model only ever runs on your future questions, not on the corpus again. Querying is fast because the heavy work is already done.</p>
+</section>
+
+<!-- STEP 4: YOUR QUESTION -->
+<section class="step">
+  <div class="step-num"><span class="n">04</span> · the query</div>
+  <h2>Your question gets a <span class="blue">fingerprint too</span></h2>
+  <p class="intro">When you ask the strategist a question, it runs the SAME model on your question. Your question becomes a 384-number fingerprint in the same number-space as the paragraphs.</p>
+
+  <div class="fingerprint">
+    <div class="fp-row">
+      <div class="fp-text" style="border-left-color: var(--blue); color: var(--ink); font-weight: 600;">"Should I raise my prices on existing customers?"</div>
+      <div class="fp-arrow">→</div>
+      <div class="fp-vec">
+        [ <span style="color: var(--blue); font-weight: 600;">0.40, -0.21, 0.79, 0.15, -0.53,</span>
+        <span class="ellipsis">… 379 more numbers …</span>
+        <span style="color: var(--blue); font-weight: 600;">0.90, -0.05</span> ]
+      </div>
+    </div>
+  </div>
+
+  <p>Compare those numbers to the pricing paragraph fingerprints from step 02. They're <strong>almost identical</strong>. That's the system saying "this question is about the same kind of thing as those paragraphs."</p>
+  <p>Now we have:</p>
+  <ul style="font-size: 16px; line-height: 1.8; padding-left: 20px;">
+    <li>1 fingerprint for your question</li>
+    <li>9,558 fingerprints for the paragraphs in the brain</li>
+  </ul>
+  <p>The only thing left to do is find the closest paragraph fingerprints to your question's fingerprint.</p>
+</section>
+
+<!-- STEP 5: COSINE -->
+<section class="step">
+  <div class="step-num"><span class="n">05</span> · the search</div>
+  <h2>Find the <span class="green">closest fingerprints</span></h2>
+  <p class="intro">The math: how close are two fingerprints? Close means "same kind of meaning." Far means "different topic." For each of the 9,558 paragraph fingerprints, we compute a closeness score to your question. Sort. Take the top 5.</p>
+
+  <div class="space-plot">
+    <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A simplified 2D view of fingerprint space, showing the question in the center and matching paragraphs nearby.">
+      <!-- Grid backdrop -->
+      <defs>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e5e5e0" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="600" height="320" fill="url(#grid)"/>
+
+      <!-- Far cluster: retention (amber) -->
+      <circle cx="80" cy="60" r="6" fill="#d97706" opacity="0.55"/>
+      <circle cx="110" cy="90" r="6" fill="#d97706" opacity="0.55"/>
+      <circle cx="70" cy="100" r="6" fill="#d97706" opacity="0.55"/>
+      <circle cx="120" cy="50" r="6" fill="#d97706" opacity="0.55"/>
+      <text x="55" y="135" font-family="JetBrains Mono" font-size="10" fill="#6b7280">retention</text>
+
+      <!-- Mid cluster: leads (blue) -->
+      <circle cx="500" cy="80" r="6" fill="#1b5eab" opacity="0.55"/>
+      <circle cx="530" cy="110" r="6" fill="#1b5eab" opacity="0.55"/>
+      <circle cx="510" cy="50" r="6" fill="#1b5eab" opacity="0.55"/>
+      <circle cx="480" cy="100" r="6" fill="#1b5eab" opacity="0.55"/>
+      <text x="487" y="145" font-family="JetBrains Mono" font-size="10" fill="#6b7280">leads</text>
+
+      <!-- Far cluster: scaling (purple) -->
+      <circle cx="150" cy="270" r="6" fill="#6b1ec4" opacity="0.55"/>
+      <circle cx="120" cy="240" r="6" fill="#6b1ec4" opacity="0.55"/>
+      <circle cx="180" cy="250" r="6" fill="#6b1ec4" opacity="0.55"/>
+      <text x="120" y="295" font-family="JetBrains Mono" font-size="10" fill="#6b7280">scaling</text>
+
+      <!-- Near cluster: PRICING (green, near query) -->
+      <circle cx="320" cy="170" r="6" fill="#2d8f47"/>
+      <circle cx="295" cy="155" r="6" fill="#2d8f47"/>
+      <circle cx="335" cy="185" r="6" fill="#2d8f47"/>
+      <circle cx="305" cy="195" r="6" fill="#2d8f47"/>
+      <circle cx="345" cy="155" r="6" fill="#2d8f47"/>
+      <text x="290" y="225" font-family="JetBrains Mono" font-size="10" fill="#2d8f47" font-weight="700">pricing</text>
+
+      <!-- The QUERY (red star/diamond at center) -->
+      <g transform="translate(310, 160)">
+        <circle r="14" fill="#c43d2f" opacity="0.15"/>
+        <circle r="9" fill="#c43d2f"/>
+        <circle r="9" fill="none" stroke="#c43d2f" stroke-width="2" opacity="0.6">
+          <animate attributeName="r" from="9" to="20" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" from="0.6" to="0" dur="2s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+      <text x="330" y="155" font-family="JetBrains Mono" font-size="11" fill="#c43d2f" font-weight="700">your question</text>
+
+      <!-- Lines from query to nearest 5 pricing chunks -->
+      <line x1="310" y1="160" x2="320" y2="170" stroke="#2d8f47" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.6"/>
+      <line x1="310" y1="160" x2="295" y2="155" stroke="#2d8f47" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.6"/>
+      <line x1="310" y1="160" x2="335" y2="185" stroke="#2d8f47" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.6"/>
+      <line x1="310" y1="160" x2="305" y2="195" stroke="#2d8f47" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.6"/>
+      <line x1="310" y1="160" x2="345" y2="155" stroke="#2d8f47" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.6"/>
+    </svg>
+    <div class="space-legend">
+      <span class="item"><span class="dot" style="background: #c43d2f"></span> your question</span>
+      <span class="item"><span class="dot" style="background: #2d8f47"></span> pricing (closest)</span>
+      <span class="item"><span class="dot" style="background: #1b5eab; opacity: 0.55"></span> leads (far)</span>
+      <span class="item"><span class="dot" style="background: #d97706; opacity: 0.55"></span> retention (far)</span>
+      <span class="item"><span class="dot" style="background: #6b1ec4; opacity: 0.55"></span> scaling (far)</span>
+    </div>
+  </div>
+
+  <p>The actual fingerprint space has 384 dimensions, not 2. But the principle is the same: paragraphs about similar topics cluster together. Your question lands somewhere in this space, and the closest paragraphs win.</p>
+  <p>The closeness score per paragraph is one matrix multiplication. The whole comparison across 9,558 paragraphs takes under a millisecond.</p>
+
+  <div class="compare">
+    <div class="compare-row high">
+      <span class="label">pricing #1</span>
+      <div class="bar"><div class="bar-fill" style="width: 85%"></div></div>
+      <span class="score">0.82</span>
+    </div>
+    <div class="compare-row high">
+      <span class="label">pricing #2</span>
+      <div class="bar"><div class="bar-fill" style="width: 80%"></div></div>
+      <span class="score">0.78</span>
+    </div>
+    <div class="compare-row med">
+      <span class="label">leads #1</span>
+      <div class="bar"><div class="bar-fill" style="width: 45%"></div></div>
+      <span class="score">0.45</span>
+    </div>
+    <div class="compare-row low">
+      <span class="label">retention #1</span>
+      <div class="bar"><div class="bar-fill" style="width: 22%"></div></div>
+      <span class="score">0.22</span>
+    </div>
+    <div class="compare-row veryloow">
+      <span class="label">scaling #1</span>
+      <div class="bar"><div class="bar-fill" style="width: 14%"></div></div>
+      <span class="score">0.14</span>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 6: BM25 -->
+<section class="step">
+  <div class="step-num"><span class="n">06</span> · bonus pass</div>
+  <h2>Keyword search runs <span class="blue">at the same time</span></h2>
+  <p class="intro">Fingerprint matching is smart but slightly blurry. When your question contains a specific phrase like "CLOSER framework" or "Rule of 100" or "Grand Slam Offer," exact-word matching catches things that fingerprints sometimes blur. So we run BOTH searches in parallel and combine.</p>
+
+  <div class="side">
+    <div class="side-card dense">
+      <h3>The fingerprint pass</h3>
+      <p>Your question becomes a 384-number fingerprint. Find paragraphs with similar fingerprints. Smart about meaning.</p>
+      <div class="ex"><strong>Catches:</strong> "should I price higher?" finds paragraphs about <em>charging more</em>, even though the words differ.</div>
+    </div>
+    <div class="side-card bm25">
+      <h3>The keyword pass</h3>
+      <p>Old-school search: which paragraphs contain the most relevant rare words from your question? Smart about exact terminology.</p>
+      <div class="ex"><strong>Catches:</strong> "explain the CLOSER framework" finds paragraphs that contain the word "CLOSER" verbatim.</div>
+    </div>
+  </div>
+
+  <p>Each pass produces its own top-30 list of paragraphs. We combine both lists with a simple formula (Reciprocal Rank Fusion): paragraphs that rank well in BOTH lists bubble to the top. Best of both worlds.</p>
+</section>
+
+<!-- STEP 7: DIVERSITY -->
+<section class="step">
+  <div class="step-num"><span class="n">07</span> · diversity</div>
+  <h2>Make sure the top 5 are <span class="amber">different angles</span></h2>
+  <p class="intro">If 5 of the top paragraphs all say roughly the same thing, that's a waste. So before returning the final 5, we pick for diversity: each new pick should be relevant AND different from the ones already picked. The strategist sees 5 different angles instead of 5 repeats.</p>
+
+  <div class="topk">
+    <div class="topk-header">
+      <span>before diversity filter</span>
+      <span>after diversity filter</span>
+    </div>
+    <div class="topk-row">
+      <div class="rank">1</div>
+      <div class="text">"Raise prices, grandfather existing customers for one cycle..."</div>
+      <div class="src">$100M Offers</div>
+    </div>
+    <div class="topk-row diversity-out">
+      <div class="rank">2</div>
+      <div class="text">"Don't apologize when raising prices. Just announce..."</div>
+      <div class="src">$100M Offers</div>
+    </div>
+    <div class="topk-row diversity-in">
+      <div class="rank">2</div>
+      <div class="text">"The fastest credible service in a market wins price..."</div>
+      <div class="src">video transcript</div>
+    </div>
+    <div class="topk-row">
+      <div class="rank">3</div>
+      <div class="text">"Charge heinous amounts. Low prices attract bad customers..."</div>
+      <div class="src">$100M Offers</div>
+    </div>
+    <div class="topk-note">
+      The struck-through row was kicked out because it overlapped too much with row 1. A different angle from the video transcript took its place.
+    </div>
+  </div>
+</section>
+
+<!-- STEP 8: SYNTHESIS -->
+<section class="step">
+  <div class="step-num"><span class="n">08</span> · synthesis</div>
+  <h2>The strategist takes <span class="green">over</span></h2>
+  <p class="intro">Top 5 paragraphs handed to Claude. Claude reads them, applies them to your specific business (using <code>profile.yaml</code>), and answers in one paragraph. Cites the source by name. That's the response you see.</p>
+
+  <div class="pipeline">
+    <div class="pipe-step user">
+      <span class="role">your question</span>
+      Should I raise my prices on existing customers?
+    </div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-step brain">
+      <span class="role">brain returns top 5 relevant paragraphs</span>
+      [pricing paragraph 1] [pricing paragraph 2] [video chunk] [bonus chunk] [$100M Offers chunk]
+    </div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-step proc">
+      <span class="role">claude reads them + your profile.yaml</span>
+      Applies the methodology to your specific revenue, price range, customer base.
+    </div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-step out">
+      <span class="role">answer to you</span>
+      "Yes. Raise to $8,000. Per $100M Offers: grandfather existing customers for one cycle. Email Monday, 30 days notice. Don't apologize."
+    </div>
+  </div>
+
+  <p>The strategist never makes things up from training data alone. Every claim is grounded in a paragraph from the brain. If the brain doesn't contain something, the strategist says so rather than guessing.</p>
+</section>
+
+<!-- STEP 9: TECHNICAL NAMES -->
+<section class="step">
+  <div class="step-num"><span class="n">09</span> · the technical names</div>
+  <h2>For the <span class="purple">curious</span></h2>
+  <p class="intro">You do not need to know any of these terms to use the system. But if you read a blog post about "RAG" or "embeddings" or "cosine similarity," now you know what they mean:</p>
+
+  <div class="tech-names">
+    <span class="c">// what we called it:</span>             <span class="arrow">→</span> <span class="c">// what it's actually called:</span><br>
+    <br>
+    <span class="k">fingerprint</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arrow">→</span> <span class="s">"embedding"</span> (a vector of 384 floats)<br>
+    <span class="k">fingerprint generator</span> &nbsp;&nbsp;<span class="arrow">→</span> <span class="s">"embedding model"</span> (BAAI/bge-small-en-v1.5)<br>
+    <span class="k">distance score</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arrow">→</span> <span class="s">"cosine similarity"</span><br>
+    <span class="k">keyword pass</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arrow">→</span> <span class="s">"BM25"</span> (a 50-year-old algorithm, still excellent)<br>
+    <span class="k">combining both lists</span> &nbsp;&nbsp;&nbsp;<span class="arrow">→</span> <span class="s">"reciprocal rank fusion"</span><br>
+    <span class="k">diversity filter</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arrow">→</span> <span class="s">"maximal marginal relevance (MMR)"</span><br>
+    <span class="k">the whole pattern</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="arrow">→</span> <span class="s">"retrieval-augmented generation (RAG)"</span><br>
+    <span class="k">building the index</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="arrow">→</span> <span class="s">"ingestion"</span> (one-time, ~20 minutes)
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="step">
+  <div class="step-num"><span class="n">10</span> · in one sentence</div>
+  <h2>The whole thing, <span class="green">in a sentence</span></h2>
+  <p style="font-size: 22px; line-height: 1.45; font-weight: 600; color: var(--ink); margin: 24px 0 28px; max-width: 60ch;">
+    Convert every paragraph in the corpus into a list of 384 numbers that captures its meaning, do the same to your question, find the paragraphs whose numbers are closest, hand them to Claude, get an answer.
+  </p>
+  <p>That's it. Everything else is a refinement: keyword search to catch exact phrases, diversity filters to avoid repetition, a profile.yaml so the answer is specific to your business. The core idea is just <em>numbers that capture meaning</em>.</p>
+</section>
+
+<footer>
+  <div>
+    <span class="prompt">$</span> echo <span style="color: var(--green)">"how-it-works"</span>
+    <span style="color: var(--muted)">&nbsp; // $100m-business-os · v0.7</span>
+  </div>
+  <div style="display: flex; gap: 22px;">
+    <a href="/">main page</a>
+    <a href="/#install">install</a>
+    <a href="/#workflows">workflows</a>
+    <a href="/#faq">faq</a>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>
